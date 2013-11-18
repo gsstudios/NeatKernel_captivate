@@ -565,6 +565,17 @@ else
 KBUILD_CFLAGS	+= -O2
 endif
 
+ifdef CONFIG_CC_CHECK_WARNING_STRICTLY
+KBUILD_CFLAGS    += -fdiagnostics-show-option -Werror \
+                 -Wno-error=unused-function \
+                 -Wno-error=unused-variable \
+                 -Wno-error=unused-value \
+                 -Wno-error=unused-label \
+                 -Wno-error=uninitialized \
+                 -Wno-error=address \
+                 -Wno-error=enum-compare
+endif
+
 include $(srctree)/arch/$(SRCARCH)/Makefile
 
 ifneq ($(CONFIG_FRAME_WARN),0)
