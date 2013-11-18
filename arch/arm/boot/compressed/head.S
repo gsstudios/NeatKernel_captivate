@@ -186,7 +186,7 @@ restart:	adr	r0, LC0
 		 * We might be running at a different address.  We need
 		 * to fix up various pointers.
 		 */
-		sub	r0, r0, r1		@ calculate the delta offset
+		sub  r0, r0, r1		@ calculate the delta offset
 		add	r6, r6, r0		@ _edata
 		add	r10, r10, r0		@ inflated kernel size location
 
@@ -292,7 +292,13 @@ wont_overwrite:
  *   sp  = stack pointer
  */
 		teq	r0, #0
+#ifndef CONFIG_CRYPTO_FIPS
 		beq	not_relocated
+#else
+        movw r5, #:lower16:zimage_ram_base_addr
+        movt r5, #:upper16:zimage_ram_base_addr
+        beq not_relocated_copy
+#endif
 		add	r11, r11, r0
 		add	r12, r12, r0
 
@@ -305,6 +311,11 @@ wont_overwrite:
 		add	r2, r2, r0
 		add	r3, r3, r0
 
+#ifdef CONFIG_CRYPTO_FIPS
+        movw r5, #:lower16:zimage_ram_base_addr
+        movt r5, #:upper16:zimage_ram_base_addr
+        bl copy_compressed
+#endif
 		/*
 		 * Relocate all entries in the GOT table.
 		 */
@@ -367,12 +378,39 @@ LC0:		.word	LC0			@ r1
 		.word	.L_user_stack_end	@ sp
 		.size	LC0, . - LC0
 
+#ifdef CONFIG_CRYPTO_FIPS
+        .equ   zimage_ram_base_addr, FIPS_KERNEL_RAM_BASE
+#endif
+
 #ifdef CONFIG_ARCH_RPC
 		.globl	params
 params:		ldr	r0, =0x10000100		@ params_phys for RPC
 		mov	pc, lr
 		.ltorg
 		.align
+#endif
+
+
+#ifdef CONFIG_CRYPTO_FIPS
+not_relocated_copy:
+		bl copy_compressed
+		b not_relocated
+
+copy_compressed:
+		mov r1, r5
+		add	r9, r4, #CONFIG_CRYPTO_FIPS_INTEG_OFFSET
+
+1:
+		ldmia	r1!, {r5}
+		stmia	r9!, {r5}
+		cmp	r1, r2
+		blo	1b
+
+		.rept 8
+		ldmia	r1!, {r5}
+		stmia	r9!, {r5}
+		.endr
+		mov	pc, lr
 #endif
 
 /*
@@ -401,6 +439,7 @@ cache_on:	mov	r3, #8			@ cache_on function
  * to cover all 32bit address and cacheable and bufferable.
  */
 __armv4_mpu_cache_on:
+		.arch armv4
 		mov	r0, #0x3f		@ 4G, the whole
 		mcr	p15, 0, r0, c6, c7, 0	@ PR7 Area Setting
 		mcr 	p15, 0, r0, c6, c7, 1
@@ -502,13 +541,25 @@ __setup_mmu:	sub	r3, r4, #16384		@ Page directory size
 		mov	pc, lr
 ENDPROC(__setup_mmu)
 
+@ Enable unaligned access on v6, to allow better code generation
+@ for the decompressor C code:
+__armv6_mmu_cache_on:
+		.arch armv6
+		mrc	p15, 0, r0, c1, c0, 0	@ read SCTLR
+		bic	r0, r0, #2		@ A (no unaligned access fault)
+		orr	r0, r0, #1 << 22	@ U (v6 unaligned access model)
+		mcr	p15, 0, r0, c1, c0, 0	@ write SCTLR
+		b	__armv4_mmu_cache_on
+
 __arm926ejs_mmu_cache_on:
 #ifdef CONFIG_CPU_DCACHE_WRITETHROUGH
+		.arch armv5
 		mov	r0, #4			@ put dcache in WT mode
 		mcr	p15, 7, r0, c15, c0, 0
 #endif
 
 __armv4_mmu_cache_on:
+		.arch armv4
 		mov	r12, lr
 #ifdef CONFIG_MMU
 		bl	__setup_mmu
@@ -528,6 +579,7 @@ __armv4_mmu_cache_on:
 		mov	pc, r12
 
 __armv7_mmu_cache_on:
+		.arch armv7-a
 		mov	r12, lr
 #ifdef CONFIG_MMU
 		mrc	p15, 0, r11, c0, c1, 4	@ read ID_MMFR0
@@ -542,6 +594,9 @@ __armv7_mmu_cache_on:
 		bic	r0, r0, #1 << 28	@ clear SCTLR.TRE
 		orr	r0, r0, #0x5000		@ I-cache enable, RR cache replacement
 		orr	r0, r0, #0x003c		@ write buffer
+		bic	r0, r0, #2		@ A (no unaligned access fault)
+		orr	r0, r0, #1 << 22	@ U (v6 unaligned access model)
+						@ (needed for ARM1176)
 #ifdef CONFIG_MMU
 #ifdef CONFIG_CPU_ENDIAN_BE8
 		orr	r0, r0, #1 << 25	@ big-endian page tables
@@ -779,7 +834,7 @@ proc_types:
 
 		.word	0x0007b000		@ ARMv6
 		.word	0x000ff000
-		W(b)	__armv4_mmu_cache_on
+		W(b)	__armv6_mmu_cache_on
 		W(b)	__armv4_mmu_cache_off
 		W(b)	__armv6_mmu_cache_flush
 
@@ -899,6 +954,7 @@ cache_clean_flush:
 		mov	r3, #16
 		b	call_cache_fn
 
+		.arch armv4
 __armv4_mpu_cache_flush:
 		mov	r2, #1
 		mov	r3, #0
@@ -917,6 +973,7 @@ __armv4_mpu_cache_flush:
 		mov	pc, lr
 		
 __fa526_cache_flush:
+		.arch armv6
 		mov	r1, #0
 		mcr	p15, 0, r1, c7, c14, 0	@ clean and invalidate D cache
 		mcr	p15, 0, r1, c7, c5, 0	@ flush I cache
@@ -931,6 +988,7 @@ __armv6_mmu_cache_flush:
 		mcr	p15, 0, r1, c7, c10, 4	@ drain WB
 		mov	pc, lr
 
+		.arch armv7-a
 __armv7_mmu_cache_flush:
 		mrc	p15, 0, r10, c0, c1, 5	@ read ID_MMFR1
 		tst	r10, #0xf << 16		@ hierarchical cache (ARMv7)
@@ -991,6 +1049,7 @@ iflush:
 		mcr	p15, 0, r10, c7, c5, 4	@ ISB
 		mov	pc, lr
 
+		.arch armv5
 __armv5tej_mmu_cache_flush:
 1:		mrc	p15, 0, r15, c7, c14, 3	@ test,clean,invalidate D cache
 		bne	1b
@@ -998,6 +1057,7 @@ __armv5tej_mmu_cache_flush:
 		mcr	p15, 0, r0, c7, c10, 4	@ drain WB
 		mov	pc, lr
 
+		.arch armv4
 __armv4_mmu_cache_flush:
 		mov	r2, #64*1024		@ default: 32K dcache size (*2)
 		mov	r11, #32		@ default: 32 byte line size
@@ -1035,6 +1095,8 @@ __armv3_mpu_cache_flush:
 		mov	r1, #0
 		mcr	p15, 0, r1, c7, c0, 0	@ invalidate whole cache v3
 		mov	pc, lr
+
+		.arch armv4
 
 /*
  * Various debugging routines for printing hex characters and
