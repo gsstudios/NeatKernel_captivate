@@ -113,7 +113,7 @@ static ssize_t aries_vibrator_show_duty(struct device *dev,
 					struct device_attribute *attr,
 					const char *buf)
 {
-	return sprintf(buf, "%d", pwm_duty);
+	return sprintf(buf, "%u", pwm_duty);
 }
 static DEVICE_ATTR(pwm_duty, S_IRUGO | S_IWUGO, aries_vibrator_show_duty, aries_vibrator_set_duty);
 static struct attribute *pwm_duty_attributes[] = {

@@ -197,13 +197,13 @@ static void filter_init(struct bma023_data *bma023)
 		fir_filter_init(&bma023->filter[i], BMA023_FILTER_LEN);
 }
 
-static void filter_filter(struct bma023_data *bma023, s16 *orig, s16 *filtered)
+/* static void filter_filter(struct bma023_data *bma023, s16 *orig, s16 *filtered)
 {
 	int i;
 
 	for (i = 0; i < 3; i++)
 		filtered[i] = fir_filter_filter(&bma023->filter[i], orig[i]);
-}
+} */
 
 static void filter_stabilizer(struct bma023_data *bma023,
 					s16 *orig, s16 *stabled)
@@ -320,7 +320,7 @@ static int bma023_measure(struct bma023_data *bma023,
 	int err;
 	int i;
 	s16 raw_data[3];
-	s16 filtered_data[3];
+//	s16 filtered_data[3];
 	s16 stabled_data[3];
 	u8 buf[6];
 

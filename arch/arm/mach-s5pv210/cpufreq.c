@@ -663,7 +663,9 @@ static int __init s5pv210_cpu_init(struct cpufreq_policy *policy)
 {
 	unsigned long mem_type;
 	int ret;
-
+#ifdef CONFIG_DVFS_LIMIT
+	int i;
+#endif
 	cpu_clk = clk_get(NULL, "armclk");
 	if (IS_ERR(cpu_clk))
 		return PTR_ERR(cpu_clk);
@@ -713,7 +715,6 @@ static int __init s5pv210_cpu_init(struct cpufreq_policy *policy)
 #endif
 
 #ifdef CONFIG_DVFS_LIMIT
-	int i;
 	for (i = 0; i < DVFS_LOCK_TOKEN_NUM; i++)
 		g_dvfslockval[i] = MAX_PERF_LEVEL;
 #endif
@@ -852,7 +853,7 @@ ssize_t show_UV_mV_table(struct cpufreq_policy *policy, char *buf)
 {
 	int i, len = 0;
 	for (i = 0; i <= MAX_PERF_LEVEL; i++) {
-		len += sprintf(buf + len, "%dmhz: %d mV\n", s5pv210_freq_table[i].frequency / 1000, dvs_conf[i].arm_volt / 1000);
+		len += sprintf(buf + len, "%umhz: %lu mV\n", s5pv210_freq_table[i].frequency / 1000, dvs_conf[i].arm_volt / 1000);
 	}
 	return len;
 }

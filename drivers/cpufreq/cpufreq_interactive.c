@@ -827,7 +827,7 @@ define_one_global_rw(boost);
 static ssize_t show_boostpulse(struct kobject *kobj,
 				struct attribute *attr, char *buf)
 {
-	return sprintf(buf, "%lu\n", boostpulse_duration);
+	return sprintf(buf, "%d\n", boostpulse_duration);
 }
 
 static ssize_t store_boostpulse(struct kobject *kobj, struct attribute *attr,

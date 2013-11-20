@@ -37,7 +37,8 @@
 #include <asm/fiq_glue.h>
 #include <asm/stacktrace.h>
 
-#include <mach/system.h>
+//#include <mach/system.h>
+#include <plat/system-reset.h>
 
 #include <linux/uaccess.h>
 

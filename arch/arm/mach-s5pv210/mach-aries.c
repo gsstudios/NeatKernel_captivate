@@ -44,7 +44,8 @@
 #include <mach/gpio-aries.h>
 #include <mach/adc.h>
 #include <mach/param.h>
-#include <mach/system.h>
+//#include <mach/system.h>
+#include <plat/system-reset.h>
 #include <mach/sec_switch.h>
 #ifdef CONFIG_SAMSUNG_FASCINATE
 #include <mach/regs-gpio.h>
@@ -1609,7 +1610,7 @@ static void ce147_init(void)
 static int ce147_ldo_en(bool en)
 {
 	int err = 0;
-	int result;
+	int result = 0;
 
 	if (IS_ERR_OR_NULL(cam_isp_core_regulator) ||
 		IS_ERR_OR_NULL(cam_isp_host_regulator) ||
@@ -1952,59 +1953,6 @@ static int ce147_power_en(int onoff)
 	return 0;
 }
 
-static int smdkc110_cam1_power(int onoff)
-{
-	int err;
-	/* Implement on/off operations */
-
-	/* CAM_VGA_nSTBY - GPB(0) */
-	err = gpio_request(S5PV210_GPB(0), "GPB");
-
-	if (err) {
-		printk(KERN_ERR "failed to request GPB for camera control\n");
-		return err;
-	}
-
-	gpio_direction_output(S5PV210_GPB(0), 0);
-	
-	mdelay(1);
-
-	gpio_direction_output(S5PV210_GPB(0), 1);
-
-	mdelay(1);
-
-	gpio_set_value(S5PV210_GPB(0), 1);
-
-	mdelay(1);
-
-	gpio_free(S5PV210_GPB(0));
-	
-	mdelay(1);
-
-	/* CAM_VGA_nRST - GPB(2) */
-	err = gpio_request(S5PV210_GPB(2), "GPB");
-
-	if (err) {
-		printk(KERN_ERR "failed to request GPB for camera control\n");
-		return err;
-	}
-
-	gpio_direction_output(S5PV210_GPB(2), 0);
-
-	mdelay(1);
-
-	gpio_direction_output(S5PV210_GPB(2), 1);
-
-	mdelay(1);
-
-	gpio_set_value(S5PV210_GPB(2), 1);
-
-	mdelay(1);
-
-	gpio_free(S5PV210_GPB(2));
-
-	return 0;
-}
 
 /*
  * Guide for Camera Configuration for Jupiter board
@@ -2061,7 +2009,7 @@ static struct s3c_platform_camera ce147 = {
 #ifdef CONFIG_VIDEO_S5KA3DFX
 /* External camera module setting */
 static DEFINE_MUTEX(s5ka3dfx_lock);
-static struct regulator *s5ka3dfx_vga_avdd;
+//static struct regulator *s5ka3dfx_vga_avdd;
 static struct regulator *s5ka3dfx_vga_vddio;
 static struct regulator *s5ka3dfx_cam_isp_host;
 static struct regulator *s5ka3dfx_vga_dvdd;
@@ -2138,7 +2086,7 @@ static int s5ka3dfx_power_init(void)
 static int s5ka3dfx_power_on(void)
 {
 	int err = 0;
-	int result;
+	int result = 0;
 
 	if (s5ka3dfx_power_init()) {
 		pr_err("Failed to get all regulator\n");
@@ -2383,8 +2331,8 @@ static struct s3c_platform_jpeg jpeg_plat __initdata = {
 #endif
 
 /* I2C0 */
-static struct i2c_board_info i2c_devs0[] __initdata = {
-};
+//static struct i2c_board_info i2c_devs0[] __initdata = {
+//};
 
 static struct i2c_board_info i2c_devs4[] __initdata = {
 	{
@@ -2394,8 +2342,8 @@ static struct i2c_board_info i2c_devs4[] __initdata = {
 };
 
 /* I2C1 */
-static struct i2c_board_info i2c_devs1[] __initdata = {
-};
+//static struct i2c_board_info i2c_devs1[] __initdata = {
+//};
 
 static void mxt224_power_on(void)
 {
@@ -2498,11 +2446,13 @@ static struct i2c_board_info i2c_devs5[] __initdata = {
 #endif
 };
 
+#if defined (CONFIG_SAMSUNG_GALAXYS) || defined (CONFIG_SAMSUNG_GALAXYSB)
 static struct i2c_board_info i2c_devs8[] __initdata = {
 	{
 		I2C_BOARD_INFO("Si4709", (0x20 >> 1)),
 	},
 };
+#endif
 
 static void fsa9480_usb_cb(bool attached)
 {
