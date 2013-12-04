@@ -150,11 +150,11 @@ if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 	./utilities/acp -fp zImage boot.img
 	# copy all needed to out kernel folder
 	rm $KERNELDIR/out/boot.img >> /dev/null;
-	rm $KERNELDIR/out/Fluid-Kernel_* >> /dev/null;
-	GETVER=`grep 'Fluid-Kernel_v.*' arch/arm/configs/${KERNEL_CONFIG} | sed 's/.*_.//g' | sed 's/".*//g'`
+	rm $KERNELDIR/out/NeatKernel_* >> /dev/null;
+	GETVER=`grep 'NeatKernel_v.*' arch/arm/configs/${KERNEL_CONFIG} | sed 's/.*_.//g' | sed 's/".*//g'`
 	cp $KERNELDIR/boot.img /$KERNELDIR/out/
 	cd $KERNELDIR/out/
-	zip -r Fluid-Kernel_v${GETVER}-`date +"[%m-%d]-[%H-%M]"`.zip .
+	zip -r NeatKernel_v${GETVER}-`date +"[%m-%d]-[%H-%M]"`.zip .
 	echo "${bldcya}***** Ready to Roar *****${txtrst}";
 	# finished? get elapsed time
 	res2=$(date +%s.%N)
@@ -171,7 +171,7 @@ if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 			sleep 1;
 			ADB_STATUS=`adb get-state` >> /dev/null;
 		done
-		adb push $KERNELDIR/out/Fluid-Kernel_v*.zip /sdcard/
+		adb push $KERNELDIR/out/NeatKernel_v*.zip /sdcard/
 		while [ "$reboot_recovery" != "y" ] && [ "$reboot_recovery" != "n" ] && [ "$reboot_recovery" != "Y" ] && [ "$reboot_recovery" != "N" ]
 		do
 			read -p "${bldblu}Reboot to recovery?${txtrst}${blu} (y/n)${txtrst}" reboot_recovery;
