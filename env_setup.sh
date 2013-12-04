@@ -8,7 +8,7 @@ else
 fi;
 
 export PARENT_DIR=`readlink -f ${KERNELDIR}/..`;
-export INITRAMFS_SOURCE=`readlink -f ${KERNELDIR}/../Fluid-initramfs`;
+export INITRAMFS_SOURCE=`readlink -f ${KERNELDIR}/../ Neat_cappy_initramfs`;
 export INITRAMFS_TMP=${KERNELDIR}/tmp/initramfs_source;
 
 # create symbolic source link
@@ -27,10 +27,16 @@ if [ ! -e /usr/bin/ccache ]; then
 	sudo apt-get install ccache
 fi
 
+#name
+export KBUILD_BUILD_USER=mohammad.afaneh
+export KBUILD_BUILD_HOST=ubuntu
+
 # kernel
 export ARCH=arm;
 export USE_SEC_FIPS_MODE=true;
-export KERNEL_CONFIG="fluid_vibrantmtd_defconfig";
+#export KERNEL_CONFIG="fluid_vibrantmtd_defconfig";
+export KERNEL_CONFIG="Neat_captivatemtd_defconfig";
+
 
 # build script
 export USER=`whoami`
