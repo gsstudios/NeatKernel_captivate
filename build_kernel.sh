@@ -155,6 +155,9 @@ if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 	cp $KERNELDIR/boot.img /$KERNELDIR/out/
 	cd $KERNELDIR/out/
 	zip -r NeatKernel_v${GETVER}-`date +"[%m-%d]-[%H-%M]"`.zip .
+	cd $KERNELDIR
+        tar cvf `echo NeatKernel`.tar zImage
+        cp $KERNELDIR/NeatKernel.tar /$KERNELDIR/out/
 	echo "${bldcya}***** Ready to Roar *****${txtrst}";
 	# finished? get elapsed time
 	res2=$(date +%s.%N)
