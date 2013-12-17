@@ -162,29 +162,6 @@ if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 	# finished? get elapsed time
 	res2=$(date +%s.%N)
 	echo "${bldgrn}Total time elapsed: ${txtrst}${grn}$(echo "($res2 - $res1) / 60"|bc ) minutes ($(echo "$res2 - $res1"|bc ) seconds) ${txtrst}";	
-	while [ "$push_ok" != "y" ] && [ "$push_ok" != "n" ] && [ "$push_ok" != "Y" ] && [ "$push_ok" != "N" ]
-	do
-	      read -p "${bldblu}Do you want to push the kernel to the sdcard of your device?${txtrst}${blu} (y/n)${txtrst}" push_ok;
-		sleep 1;
-	done
-	if [ "$push_ok" == "y" ] || [ "$push_ok" == "Y" ]; then
-		STATUS=`adb get-state` >> /dev/null;
-		while [ "$ADB_STATUS" != "device" ]
-		do
-			sleep 1;
-			ADB_STATUS=`adb get-state` >> /dev/null;
-		done
-		adb push $KERNELDIR/out/NeatKernel_v*.zip /sdcard/
-		while [ "$reboot_recovery" != "y" ] && [ "$reboot_recovery" != "n" ] && [ "$reboot_recovery" != "Y" ] && [ "$reboot_recovery" != "N" ]
-		do
-			read -p "${bldblu}Reboot to recovery?${txtrst}${blu} (y/n)${txtrst}" reboot_recovery;
-			sleep 1;
-		done
-		if [ "$reboot_recovery" == "y" ] || [ "$reboot_recovery" == "Y" ]; then
-			adb reboot recovery;
-		fi;
-	fi;
-	exit 0;
 else
 	echo "${bldred}Kernel STUCK in BUILD!${txtrst}"
 fi;
