@@ -12,11 +12,13 @@ rm -rf $INITRAMFS_TMP;
 rm -f $KERNELDIR/r*.cpio
 rm -f $KERNELDIR/zImage;
 rm -f $KERNELDIR/out/zImage;
+rm -f $KERNELDIR/NeatKernel.tar;
 rm -f $KERNELDIR/out/boot.img;
 rm -f $KERNELDIR/boot.img;
 rm -rf $KERNELDIR/out/system/lib/modules;
 rm -rf $KERNELDIR/out/tmp_modules;
-rm -f $KERNELDIR/out/Fluid-Kernel_*;
+rm -f $KERNELDIR/out/NeatKernel_*;
+rm -f $KERNELDIR/out/NeatKernel.tar;
 rm -rf $KERNELDIR/tmp;
 rm source;
 
