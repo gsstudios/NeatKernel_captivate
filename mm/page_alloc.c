@@ -1106,11 +1106,11 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
 			list_add(&page->lru, list);
 		else
 			list_add_tail(&page->lru, list);
-		if (IS_ENABLED(CONFIG_CMA)) {
-			mt = get_pageblock_migratetype(page);
-			if (!is_migrate_cma(mt) && mt != MIGRATE_ISOLATE)
-				mt = migratetype;
-		}
+#ifdef CONFIG_CMA
+		mt = get_pageblock_migratetype(page);
+		if (!is_migrate_cma(mt) && mt != MIGRATE_ISOLATE)
+			mt = migratetype;
+#endif
 		set_page_private(page, mt);
 		list = &page->lru;
 	}
@@ -5864,7 +5864,7 @@ static int __alloc_contig_migrate_range(unsigned long start, unsigned long end)
 
 		ret = migrate_pages(&cc.migratepages,
 				    __alloc_contig_migrate_alloc,
-				    0, false, true);
+				    0, false, MIGRATE_SYNC);
 	}
 
 	putback_lru_pages(&cc.migratepages);
@@ -5909,7 +5909,7 @@ static int __reclaim_pages(struct zone *zone, gfp_t gfp_mask, int count)
 						      NULL);
 		if (!did_some_progress) {
 			/* Exhausted what can be done so it's blamo time */
-			out_of_memory(zonelist, gfp_mask, order, NULL, false);
+			out_of_memory(zonelist, gfp_mask, order, false);
 		}
 	}
 
