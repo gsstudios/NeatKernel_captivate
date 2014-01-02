@@ -315,7 +315,7 @@ struct page *dma_alloc_from_contiguous(struct device *dev, int count,
 {
 	unsigned long mask, pfn, pageno, start = 0;
 	struct cma *cma = dev_get_cma_area(dev);
-	int ret;
+	int ret, tries = 0;
 
 	if (!cma || !cma->count)
 		return NULL;
@@ -336,7 +336,7 @@ struct page *dma_alloc_from_contiguous(struct device *dev, int count,
 	for (;;) {
 		pageno = bitmap_find_next_zero_area(cma->bitmap, cma->count,
 						    start, count, mask);
-		if (pageno >= cma->count) {
+		if (++tries > 20) {
 			ret = -ENOMEM;
 			goto error;
 		}
@@ -351,8 +351,7 @@ struct page *dma_alloc_from_contiguous(struct device *dev, int count,
 		}
 		pr_debug("%s(): memory range at %p is busy, retrying\n",
 			 __func__, pfn_to_page(pfn));
-		/* try again with a bit different memory target */
-		start = pageno + mask + 1;
+		/* try again */
 	}
 
 	mutex_unlock(&cma_mutex);
