@@ -2193,6 +2193,8 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
 	bool sync_migration = false;
 	bool deferred_compaction = false;
 
+	//printk("__alloc_pages_slowpath\n");
+
 	/*
 	 * In the slowpath, we sanity check order to avoid ever trying to
 	 * reclaim >= MAX_ORDER areas which will never succeed. Callers may
@@ -2214,7 +2216,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
 	 */
 	if (NUMA_BUILD && (gfp_mask & GFP_THISNODE) == GFP_THISNODE)
 		goto nopage;
-
+	//printk("__alloc_pages_slowpath restart\n");
 restart:
 	if (!(gfp_mask & __GFP_NO_KSWAPD))
 		wake_all_kswapd(order, zonelist, high_zoneidx,
@@ -2234,7 +2236,7 @@ restart:
 	if (!(alloc_flags & ALLOC_CPUSET) && !nodemask)
 		first_zones_zonelist(zonelist, high_zoneidx, NULL,
 					&preferred_zone);
-
+	//printk("__alloc_pages_slowpath rebalance\n");
 rebalance:
 	/* This is the last chance, in general, before the goto nopage. */
 	page = get_page_from_freelist(gfp_mask, nodemask, order, zonelist,
@@ -2242,28 +2244,29 @@ rebalance:
 			preferred_zone, migratetype);
 	if (page)
 		goto got_pg;
-
+	//printk("__alloc_pages_slowpath freelist after\n");
 	/* Allocate without watermarks if the context allows */
 	if (alloc_flags & ALLOC_NO_WATERMARKS) {
+		//printk("__alloc_pages_slowpath no watermarks\n");
 		page = __alloc_pages_high_priority(gfp_mask, order,
 				zonelist, high_zoneidx, nodemask,
 				preferred_zone, migratetype);
 		if (page)
 			goto got_pg;
 	}
-
+	//printk("__alloc_pages_slowpath bleh\n");
 	/* Atomic allocations - we can't balance anything */
 	if (!wait)
 		goto nopage;
-
+	//printk("__alloc_pages_slowpath bleh1\n");
 	/* Avoid recursion of direct reclaim */
 	if (current->flags & PF_MEMALLOC)
 		goto nopage;
-
+	//printk("__alloc_pages_slowpath bleh2\n");
 	/* Avoid allocations with no watermarks from looping endlessly */
 	if (test_thread_flag(TIF_MEMDIE) && !(gfp_mask & __GFP_NOFAIL))
 		goto nopage;
-
+	//printk("__alloc_pages_slowpath bleh3\n");
 	/*
 	 * Try direct compaction. The first pass is asynchronous. Subsequent
 	 * attempts after direct reclaim are synchronous
@@ -2278,7 +2281,7 @@ rebalance:
 	if (page)
 		goto got_pg;
 	sync_migration = true;
-
+	//printk("__alloc_pages_slowpath direct compact after\n");
 	/*
 	 * If compaction is deferred for high-order allocations, it is because
 	 * sync compaction recently failed. In this is the case and the caller
@@ -2287,7 +2290,7 @@ rebalance:
 	 */
 	if (deferred_compaction && (gfp_mask & __GFP_NO_KSWAPD))
 		goto nopage;
-
+	//printk("__alloc_pages_slowpath direct compact after 2\n");
 	/* Try direct reclaim and then allocating */
 	page = __alloc_pages_direct_reclaim(gfp_mask, order,
 					zonelist, high_zoneidx,
@@ -2296,12 +2299,13 @@ rebalance:
 					migratetype, &did_some_progress);
 	if (page)
 		goto got_pg;
-
+	//printk("__alloc_pages_slowpath direct reclaim after\n");
 	/*
 	 * If we failed to make any progress reclaiming, then we are
 	 * running out of options and have to consider going OOM
 	 */
 	if (!did_some_progress) {
+		//printk("__alloc_pages_slowpath OOM\n");
 		if ((gfp_mask & __GFP_FS) && !(gfp_mask & __GFP_NORETRY)) {
 			if (oom_killer_disabled)
 				goto nopage;
@@ -2341,14 +2345,16 @@ rebalance:
 		if (pm_suspending())
 			goto nopage;
 	}
-
+	//printk("__alloc_pages_slowpath OOM after\n");
 	/* Check if we should retry the allocation */
 	pages_reclaimed += did_some_progress;
 	if (should_alloc_retry(gfp_mask, order, pages_reclaimed)) {
+		//printk("__alloc_pages_slowpath OOM-A\n");
 		/* Wait for some write requests to complete then retry */
 		wait_iff_congested(preferred_zone, BLK_RW_ASYNC, HZ/50);
 		goto rebalance;
 	} else {
+		//printk("__alloc_pages_slowpath OOM-B\n");
 		/*
 		 * High-order allocations do not necessarily loop after
 		 * direct reclaim and reclaim/compaction depends on compaction
@@ -2363,6 +2369,7 @@ rebalance:
 					&did_some_progress);
 		if (page)
 			goto got_pg;
+		//printk("__alloc_pages_slowpath OOM-C\n");
 	}
 
 nopage:
@@ -2371,6 +2378,7 @@ nopage:
 got_pg:
 	if (kmemcheck_enabled)
 		kmemcheck_pagealloc_alloc(page, order, gfp_mask);
+	//printk("__alloc_pages_slowpath GOT PAGE\n");
 	return page;
 
 }
@@ -5972,12 +5980,16 @@ int alloc_contig_range(unsigned long start, unsigned long end,
 
 	ret = start_isolate_page_range(pfn_max_align_down(start),
 				       pfn_max_align_up(end), migratetype);
-	if (ret)
+	if (ret) {
+		printk("alloc_contig_range start_isolate_page_range\n");
 		goto done;
+	}
 
 	ret = __alloc_contig_migrate_range(start, end);
-	if (ret)
+	if (ret) {
+		printk("alloc_contig_range __alloc_contig_migrate_range\n");
 		goto done;
+	}
 
 	/*
 	 * Pages from [start, end) are within a MAX_ORDER_NR_PAGES
@@ -6003,6 +6015,7 @@ int alloc_contig_range(unsigned long start, unsigned long end,
 	outer_start = start;
 	while (!PageBuddy(pfn_to_page(outer_start))) {
 		if (++order >= MAX_ORDER) {
+			printk("alloc_contig_range page buddy order=%d\n", order);
 			ret = -EBUSY;
 			goto done;
 		}
@@ -6026,6 +6039,7 @@ int alloc_contig_range(unsigned long start, unsigned long end,
 	/* Grab isolated pages from freelists. */
 	outer_end = isolate_freepages_range(outer_start, end);
 	if (!outer_end) {
+		printk("alloc_contig_range outer_end\n");
 		ret = -EBUSY;
 		goto done;
 	}
@@ -6195,5 +6209,10 @@ void dump_page(struct page *page)
 		page, atomic_read(&page->_count), page_mapcount(page),
 		page->mapping, page->index);
 	dump_page_flags(page->flags);
+	printk("private: %lu ", page_private(page));
+	if (page_mapping(page) && page_mapping(page)->a_ops)
+		printk(" writepage=%p\n", page_mapping(page)->a_ops->writepage);
+	else
+		printk("\n");
 	mem_cgroup_print_bad_page(page);
 }
