@@ -8,7 +8,7 @@ else
 fi;
 
 export PARENT_DIR=`readlink -f ${KERNELDIR}/..`;
-export INITRAMFS_SOURCE=`readlink -f ${KERNELDIR}/../Neat_cappy_initramfs`;
+export INITRAMFS_SOURCE=`readlink -f ${KERNELDIR}/../ramdisk-kitkat`;
 export INITRAMFS_TMP=${KERNELDIR}/tmp/initramfs_source;
 
 # create symbolic source link
