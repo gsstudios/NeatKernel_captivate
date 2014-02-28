@@ -36,3 +36,4 @@ VMLINUX_SYMBOL(__initramfs_size):
 #else
 	.long __irf_end - __irf_start
 #endif
+

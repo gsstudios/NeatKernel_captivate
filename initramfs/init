@@ -1,0 +1,242 @@
+#!/busybox sh
+#
+# PURPOSE 
+# ONE KERNEL IMAGE WITH ONE INITRAMFS FLASHABLE WITH HEIMDALL/ODIN 
+#
+# AUTHORS
+# Stratosk: http://forum.xda-developers.com/showthread.php?t=1468795
+# Mialwe: http://forum.xda-developers.com/showthread.php?t=1551410
+#
+# BACKGROUND
+# CM9 currently uses an init system with two separate initramfs
+# images which are packed into the kernel image at compile time.
+# During every boot process the needed initramfs image (recovery
+# or Android) gets extracted and the boot process continues using 
+# the freshly extracted initramfs. A CWM zip has to be used to 
+# install the kernel and it's modules/support files.
+#
+# With this initscript there will be one initramfs only, without
+# the need to pack/extract anything and a reduced risk for 
+# boot issues resulting from this processes. Additionally the
+# generated kernel image can be flashed directly via Heimdall/Odin.
+# 
+# ORIGINAL SOURCE 
+# CM9: https://github.com/CyanogenMod/android_kernel_samsung_aries
+# DorimanX Ideas: https://github.com/dorimanx/initramfs3
+#
+# INITRAMFS STRUCTURE:
+# /
+#  -- /recovery	        (cwm and twrp)
+#  -- /res/cm_10_0		(complete Android 4.1 initramfs)
+#  -- /res/cm_10_1		(complete Android 4.2 initramfs)
+#  -- /res/cm_10_2		(complete Android 4.3 initramfs)
+#  -- /res/cm_11_0		(complete Android 4.4 initramfs)
+#  -- /res/hw/cm**/lights.aries.so (CM/BLN)
+#  -- init (this script)
+#  -- busybox
+#  -- erase_image (binary)
+# 
+
+export _PATH="$PATH"
+export PATH=/
+
+# set busybox location, save busybox as we will move directories
+BB="/busybox"
+
+# initialize working dir and log
+$BB cd /
+$BB date >>boot.txt
+exec >>boot.txt 2>&1
+
+$BB rm init
+
+$BB echo "generating mount directories..."
+$BB mkdir proc
+$BB mkdir sys
+$BB mkdir cache
+$BB mkdir sdcard
+$BB mkdir system
+$BB mkdir data
+
+$BB mkdir /dev
+$BB mkdir /dev/block
+
+$BB echo "generating device nodes..."
+$BB mknod /dev/block/mmcblk0 b 179 0
+$BB mknod /dev/block/mmcblk0p1 b 179 1
+$BB mknod /dev/block/mmcblk0p2 b 179 2
+$BB mknod /dev/block/mmcblk0p3 b 179 3
+$BB mknod /dev/block/mtdblock2 b 31 2
+$BB mknod /dev/block/mtdblock3 b 31 3
+$BB mknod /dev/urandom c 1 9
+
+$BB echo "mounting devices..."
+$BB mount -t proc proc /proc
+$BB mount -t sysfs sysfs /sys
+$BB echo 1 > /sys/kernel/req_recovery/enable
+$BB mv -f /res/charger /
+
+while ! $BB test -d /sys/dev/block/179:0 ; do
+    echo "Waiting for internal mmc..."
+    $BB sleep 1
+done
+
+/lvm/sbin/lvm vgscan --mknodes --ignorelockingfailure
+/lvm/sbin/lvm vgchange -aly --ignorelockingfailure
+
+$BB mount -t ext4 /dev/lvpool/system /system -o rw,noatime,nodiratime,data=writeback,barrier=0,nobh,nodev,nosuid,nomblk_io_submit,errors=panic,discard
+$BB mount -t yaffs2 /dev/block/mtdblock3 /cache
+$BB mount -t ext4 /dev/lvpool/userdata /data -o rw,noatime,nodiratime,data=writeback,barrier=0,nobh,nodev,nosuid,nomblk_io_submit,errors=panic,discard
+$BB mv /cache/boot.txt /cache/boot.bak
+
+
+CM_4_1=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.1" | $BB wc -l`;
+CM_4_1_0=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.1.0" | $BB wc -l`;
+CM_4_1_1=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.1.1" | $BB wc -l`;
+CM_4_1_2=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.1.2" | $BB wc -l`;
+CM_4_2=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.2" | $BB wc -l`;
+CM_4_2_0=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.2.0" | $BB wc -l`;
+CM_4_2_1=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.2.1" | $BB wc -l`;
+CM_4_2_2=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.2.2" | $BB wc -l`;
+CM_4_3=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3" | $BB wc -l`;
+CM_4_3_0=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3.0" | $BB wc -l`;
+CM_4_3_1=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3.1" | $BB wc -l`;
+CM_4_3_2=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3.2" | $BB wc -l`;
+CM_4_4=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.4" | $BB wc -l`;
+CM_4_4_0=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.4.0" | $BB wc -l`;
+CM_4_4_1=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.4.1" | $BB wc -l`;
+CM_4_4_2=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.4.2" | $BB wc -l`;
+
+USER_ACTIONS()
+{
+	if [ "$CM_4_1" -eq "1" ] || [ "$CM_4_1_0" -eq "1" ] || [ "$CM_4_1_1" -eq "1" ] || [ "$CM_4_1_2" -eq "1" ]; then
+		$BB echo "Android or MIUI 4.1 Found";
+		$BB cp -a /res/cm_10_0/* /;
+		if $BB [ -f /data/local/.bln ]; then
+	    		$BB echo "updating BLN lights.aries.so...";
+	    		$BB cp /res/hw/hw_cm_10_0/lights.aries.so.bln /system/lib/hw/lights.aries.so;
+		else
+			$BB echo "updating CM led lights.aries.so...";
+			$BB cp /res/hw/hw_cm_10_0/lights.aries.so.cm /system/lib/hw/lights.aries.so;
+		fi
+		BOOT;
+
+	elif [ "$CM_4_2" -eq "1" ] || [ "$CM_4_2_0" -eq "1" ] || [ "$CM_4_2_1" -eq "1" ] || [ "$CM_4_2_1" -eq "1" ]; then
+		$BB echo "Android or MIUI 4.2 Found";
+		$BB cp -a /res/cm_10_1/* /;
+		if $BB [ -f /data/local/.bln ]; then
+	    		$BB echo "updating BLN lights.aries.so...";
+	    		$BB cp /res/hw/hw_cm_10_1/lights.aries.so.bln /system/lib/hw/lights.aries.so;
+		else
+			$BB echo "updating CM led lights.aries.so...";
+			$BB cp /res/hw/hw_cm_10_1/lights.aries.so.cm /system/lib/hw/lights.aries.so;
+		fi
+		BOOT;
+	
+	elif [ "$CM_4_3" -eq "1" ] || [ "$CM_4_3_0" -eq "1" ] || [ "$CM_4_3_1" -eq "1" ] || [ "$CM_4_3_2" -eq "1" ]; then
+		$BB echo "Android or MIUI 4.3 Found";
+		$BB cp -a /res/cm_10_2/* /;
+		if $BB [ -f /data/local/.bln ]; then
+	    		$BB echo "updating BLN lights.aries.so...";
+	    		$BB cp /res/hw/hw_cm_10_2/lights.aries.so.bln /system/lib/hw/lights.aries.so;
+		else
+			$BB echo "updating CM led lights.aries.so...";
+			$BB cp /res/hw/hw_cm_10_2/lights.aries.so.cm /system/lib/hw/lights.aries.so;
+		fi
+		$BB rm /system/bin/auditd;
+		BOOT;
+
+	elif [ "$CM_4_4" -eq "1" ] || [ "$CM_4_4_0" -eq "1" ] || [ "$CM_4_4_1" -eq "1" ] || [ "$CM_4_4_2" -eq "1" ]; then
+		$BB echo "Android or MIUI 4.4 Found";
+		$BB cp -a /res/cm_11_0/* /;
+		if $BB [ -f /data/local/.bln ]; then
+	    		$BB echo "updating BLN lights.aries.so...";
+	    		$BB cp /res/hw/hw_cm_11_0/lights.aries.so.bln /system/lib/hw/lights.aries.so;
+		else
+			$BB echo "updating CM led lights.aries.so...";
+			$BB cp /res/hw/hw_cm_11_0/lights.aries.so.cm /system/lib/hw/lights.aries.so;
+		fi
+		$BB rm /system/bin/auditd;
+		BOOT;
+	else
+		$BB echo "Wrong Kernel or Empty System Partition";
+		$BB cp -a /recovery/* /;
+	fi;
+}
+
+BOOT()
+{
+
+$BB fstrim /system
+$BB fstrim /data
+
+$BB chmod 644 /system/lib/hw/lights.aries.so
+
+}
+
+$BB echo "command line:"
+$BB cat /proc/cmdline
+
+$BB echo "starting bootmode detection..."
+if $BB grep -q bootmode=2 /proc/cmdline || $BB grep -q bootmode=9 /proc/cmdline ; then
+    # recovery boot
+    $BB echo "found recovery command, preparing boot...";
+    $BB echo "moving recovery to /";
+    $BB mv -f /recovery/* /;
+    $BB echo 0 > /sys/class/power_supply/battery/charging_mode_booting;
+else
+    USER_ACTIONS;
+fi
+
+if $BB grep -q 1 /sys/class/power_supply/battery/charging_mode_booting ; then
+    # low power mode
+    $BB echo "found charging_mode command";
+    $BB cp /lpm.rc /init.rc;
+    $BB rm /init.aries.rc;
+fi
+
+$BB echo "debug output:"
+$BB echo "current /:"
+$BB ls -l /
+$BB echo "current /sbin:"
+$BB ls -l /sbin/
+$BB echo "current /system:"
+$BB ls -l /system/
+#$BB echo "current /cache:"
+#$BB ls -l /cache/
+$BB echo "current /system/lib/modules:"
+$BB ls -l /system/lib/modules/
+$BB echo "current /system/lib/hw:"
+$BB ls -l /system/lib/hw/
+
+$BB echo "PATH:"
+$BB echo $PATH
+$BB echo "_PATH:"
+$BB echo %{_PATH}
+
+$BB echo "cleaning up..."
+$BB echo 0 > /sys/kernel/req_recovery/enable
+$BB umount /sys
+$BB umount /proc
+$BB umount /data
+$BB umount /system
+$BB cp /boot.txt /cache/
+$BB umount /cache
+$BB rm -r /res/hw/
+$BB rm -r /sdcard
+
+# original initramfs directories not needed anymore,
+$BB rm -rf /res/cm_10_0
+$BB rm -rf /res/cm_10_1
+$BB rm -rf /res/cm_10_2
+$BB rm -rf /res/cm_11_0
+$BB rm -rf /recovery
+
+$BB date >>boot.txt
+$BB rm -fr /dev/*
+
+# remove busybox
+$BB rm /busybox
+
+export PATH="${_PATH}"
+exec /init

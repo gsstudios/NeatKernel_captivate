@@ -23,55 +23,6 @@ echo "${bldcya}***** Setting up Environment *****${txtrst}";
 
 . ./env_setup.sh ${1} || exit 1;
 
-
-# Generate Ramdisk
-echo "${bldcya}***** Generating Ramdisk *****${txtrst}"
-echo "0" > $TMPFILE;
-(
-# remove previous initramfs files
-if [ -d $INITRAMFS_TMP ]; then
-	echo "${bldcya}***** Removing old temp initramfs_source *****${txtrst}";
-	rm -rf $INITRAMFS_TMP;
-fi;
-
-	mkdir -p $INITRAMFS_TMP;
-	cp -ax $INITRAMFS_SOURCE/* $INITRAMFS_TMP;
-	# clear git repository from tmp-initramfs
-	if [ -d $INITRAMFS_TMP/.git ]; then
-		rm -rf $INITRAMFS_TMP/.git;
-	fi;
-	
-	# clear mercurial repository from tmp-initramfs
-	if [ -d $INITRAMFS_TMP/.hg ]; then
-		rm -rf $INITRAMFS_TMP/.hg;
-	fi;
-
-	# remove empty directory placeholders from tmp-initramfs
-	find $INITRAMFS_TMP -name EMPTY_DIRECTORY | parallel rm -rf {};
-
-	# remove more from from tmp-initramfs ...
-	rm -f $INITRAMFS_TMP/update*;
-
-	# remove old ramdisk cpio
-	if [ -e $KERNELDIR/ramdisk.cpio ]; then
-		rm -f $KERNELDIR/ramdisk.cpio;
-	fi;
-	if [ -e $KERNELDIR/ramdisk-recovery.cpio ]; then
-		rm -f $KERNELDIR/ramdisk-recovery.cpio;
-	fi;
-
-	./utilities/mkbootfs $INITRAMFS_TMP/cwm-recovery > $KERNELDIR/ramdisk-recovery.cpio;
-	rm -rf $INITRAMFS_TMP/cwm-recovery >> /dev/null;
-	./utilities/mkbootfs $INITRAMFS_TMP > $KERNELDIR/ramdisk.cpio;
-
-	if [ ! -s $KERNELDIR/ramdisk.cpio ] || [ ! -s $KERNELDIR/ramdisk-recovery.cpio ]; then
-		echo "${bldblu}Ramdisk didn't generated properly. Terminating.${txtrst}";
-		exit 1;
-	fi
-	echo "1" > $TMPFILE;
-	echo "${bldcya}***** Ramdisk Generation Completed Successfully *****${txtrst}"
-)&
-
 if [ ! -f $KERNELDIR/.config ]; then
 	echo "${bldcya}***** Writing Config *****${txtrst}";
 	cp $KERNELDIR/arch/arm/configs/$KERNEL_CONFIG .config;
@@ -129,12 +80,6 @@ chmod 755 $KERNELDIR/out/system/lib/modules/*;
 echo "${bldcya}***** Removing temp module stage 2 files *****${txtrst}"
 rm -rf $KERNELDIR/out/tmp_modules >> /dev/null
 
-# wait for the successful ramdisk generation
-while [ $(cat ${TMPFILE}) == 0 ]; do
-	sleep 2;
-	echo "${bldblu}Waiting for Ramdisk generation completion.${txtrst}";
-done;
-
 # make zImage
 echo "${bldcya}***** Compiling kernel *****${txtrst}"
 if [ $USER != "root" ]; then
@@ -150,14 +95,14 @@ if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 	./utilities/acp -fp zImage boot.img
 	# copy all needed to out kernel folder
 	rm $KERNELDIR/out/boot.img >> /dev/null;
-	rm $KERNELDIR/out/NeatKernel_* >> /dev/null;
+	rm $KERNELDIR/out/${NEAT_VER}_* >> /dev/null;
 	GETVER=`grep 'NeatKernel_v.*' arch/arm/configs/${KERNEL_CONFIG} | sed 's/.*_.//g' | sed 's/".*//g'`
 	cp $KERNELDIR/boot.img /$KERNELDIR/out/
 	cd $KERNELDIR/out/
-	zip -r NeatKernel_v${GETVER}-`date +"[%m-%d]-[%H-%M]"`.zip .
+	zip -r ${NEAT_VER}_v${GETVER}-`date +"[%m-%d]-[%H-%M]"`.zip .
 	cd $KERNELDIR
-        tar cvf `echo NeatKernel`.tar zImage
-        cp $KERNELDIR/NeatKernel.tar /$KERNELDIR/out/
+        tar cvf `echo ${NEAT_VER}_v${GETVER}`.tar zImage
+        cp $KERNELDIR/${NEAT_VER}_*.tar /$KERNELDIR/out/
 	echo "${bldcya}***** Ready to Roar *****${txtrst}";
 	# finished? get elapsed time
 	res2=$(date +%s.%N)

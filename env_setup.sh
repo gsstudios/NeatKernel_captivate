@@ -1,15 +1,40 @@
 #!/bin/bash
 
 # location
-if [ "${1}" != "" ]; then
-	export KERNELDIR=`readlink -f ${1}`;
-else
-	export KERNELDIR=`readlink -f .`;
-fi;
+
+export KERNELDIR=`readlink -f .`;
 
 export PARENT_DIR=`readlink -f ${KERNELDIR}/..`;
-export INITRAMFS_SOURCE=`readlink -f ${KERNELDIR}/../ramdisk-kitkat`;
-export INITRAMFS_TMP=${KERNELDIR}/tmp/initramfs_source;
+
+case "${1}" in
+        galaxys)
+            VARIANT="galaxys"
+            ;;
+
+        captivate)
+            VARIANT="captivate"
+            ;;
+
+        vibrant)
+            VARIANT="vibrant"
+            ;;
+        galaxys_swapsd)
+            VARIANT="galaxys_swapsd"
+            ;;
+
+        captivate_swapsd)
+            VARIANT="captivate_swapsd"
+            ;;
+
+        vibrant_swapsd)
+            VARIANT="vibrant_swapsd"
+            ;;
+
+ *)
+            VARIANT="captivate"
+esac
+            
+NEAT_VER="NeatKernel_${VARIANT}"
 
 # create symbolic source link
 rm source;
@@ -34,8 +59,7 @@ export KBUILD_BUILD_HOST=ubuntu
 # kernel
 export ARCH=arm;
 export USE_SEC_FIPS_MODE=true;
-#export KERNEL_CONFIG="fluid_vibrantmtd_defconfig";
-export KERNEL_CONFIG="Neat_captivatemtd_defconfig";
+export KERNEL_CONFIG="${VARIANT}_defconfig";
 
 
 # build script
