@@ -19,6 +19,8 @@ rm -rf $KERNELDIR/out/system/lib/modules;
 rm -rf $KERNELDIR/out/tmp_modules;
 rm -f $KERNELDIR/out/NeatKernel*;
 rm -rf $KERNELDIR/tmp;
+rm -f $KERNELDIR/initramfs/recovery/default.prop;
+rm -f $KERNELDIR/initramfs-swapsd/recovery/default.prop;
 rm source;
 
 find . -type f \( -iname \*.rej \

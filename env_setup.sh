@@ -9,29 +9,36 @@ export PARENT_DIR=`readlink -f ${KERNELDIR}/..`;
 case "${1}" in
         galaxys)
             VARIANT="galaxys"
+cp initramfs/recovery/default.prop.galaxys initramfs/recovery/default.prop
             ;;
 
         captivate)
             VARIANT="captivate"
+cp initramfs/recovery/default.prop.captivate initramfs/recovery/default.prop
             ;;
 
         vibrant)
             VARIANT="vibrant"
+cp initramfs/recovery/default.prop.vibrant initramfs/recovery/default.prop
             ;;
         galaxys_swapsd)
             VARIANT="galaxys_swapsd"
+cp initramfs-swapsd/recovery/default.prop.galaxys initramfs-swapsd/recovery/default.prop
             ;;
 
         captivate_swapsd)
             VARIANT="captivate_swapsd"
+cp initramfs-swapsd/recovery/default.prop.captivate initramfs-swapsd/recovery/default.prop
             ;;
 
         vibrant_swapsd)
             VARIANT="vibrant_swapsd"
+cp initramfs-swapsd/recovery/default.prop.vibrant initramfs-swapsd/recovery/default.prop
             ;;
 
  *)
             VARIANT="captivate"
+cp initramfs/recovery/default.prop.captivate initramfs/recovery/default.prop
 esac
             
 NEAT_VER="NeatKernel_${VARIANT}"
