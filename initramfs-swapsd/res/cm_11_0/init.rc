@@ -75,8 +75,6 @@ loglevel 3
 
     # Directory for putting things only root should see.
     mkdir /mnt/secure 0700 root root
-    # Create private mountpoint so we can MS_MOVE from staging
-    mount tmpfs tmpfs /mnt/secure mode=0700,uid=0,gid=0
 
     # Directory for staging bindmounts
     mkdir /mnt/secure/staging 0700 root root
@@ -156,7 +154,6 @@ on post-fs
     mount rootfs rootfs / ro remount
     # mount shared so changes propagate into child namespaces
     mount rootfs rootfs / shared rec
-    mount tmpfs tmpfs /mnt/secure private rec
 
     # We chown/chmod /cache again so because mount is run as root + defaults
     chown system cache /cache
@@ -232,6 +229,7 @@ on post-fs-data
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
     mkdir /data/local 0751 root root
     mkdir /data/misc/media 0700 media media
+    restorecon_recursive /data/misc/media
 
     # For security reasons, /data/local/tmp should always be empty.
     # Do not place files or directories in /data/local/tmp
@@ -387,6 +385,7 @@ on boot
     setprop net.tcp.buffersize.hsupa   4094,87380,1220608,4096,16384,1220608
     setprop net.tcp.buffersize.hsdpa   4094,87380,1220608,4096,16384,1220608
     setprop net.tcp.buffersize.hspap   4094,87380,1220608,4096,16384,1220608
+    setprop net.tcp.buffersize.dchspap 4094,87380,1220608,4096,16384,1220608
     setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
     setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
     setprop net.tcp.buffersize.evdo    4094,87380,262144,4096,16384,262144
@@ -396,8 +395,6 @@ on boot
 # Increased technology maximums should be reflected here.
     write /proc/sys/net/core/rmem_max  2097152
     write /proc/sys/net/core/wmem_max  2097152
-
-    start semaboot
 
     class_start core
     class_start main
@@ -437,14 +434,6 @@ on property:sys.sysctl.extra_free_kbytes=*
 
 ## Daemon processes to be run by init.
 ##
-
-
-# Semaphore boot patch
-service semaboot /sbin/boot-patch.sh
-	user root
-	oneshot
-	disabled
-
 service ueventd /sbin/ueventd
     class core
     critical
@@ -577,7 +566,7 @@ service mtpd /system/bin/mtpd
 service keystore /system/bin/keystore /data/misc/keystore
     class main
     user keystore
-    group keystore drmrpc
+    group keystore drmrpc system
 
 service dumpstate /system/bin/dumpstate -s
     class main

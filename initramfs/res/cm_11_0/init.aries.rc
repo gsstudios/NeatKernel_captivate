@@ -43,12 +43,15 @@ on fs
 # LVM: set up LVM volumes
     exec /lvm/sbin/lvm vgscan --mknodes --ignorelockingfailure
     exec /lvm/sbin/lvm vgchange -aly --ignorelockingfailure
+    restorecon /dev/mapper/lvpool-system
+    restorecon /dev/mapper/lvpool-userdata
 
     mkdir /radio 0775 radio radio
     mount yaffs2 mtd@radio /radio
     mount yaffs2 mtd@datadata /datadata
     mount yaffs2 mtd@cache /cache
     mount_all fstab.aries
+    swapon_all fstab.aries
 
     chown radio radio /radio/modem.bin
     exec /system/bin/restorecon -r /radio
@@ -160,7 +163,7 @@ on post-fs
     chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 
 # trigger governor change uevent
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
 
 on post-fs-data
     # for migrating download provider's cache out of the small /data/data
