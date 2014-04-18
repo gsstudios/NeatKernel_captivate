@@ -17,7 +17,11 @@
   clear
 
 # Create a variable to store the version
-  export version=0.1
+  export version=0.2
+
+# location
+export KERNELDIR=`readlink -f .`;
+export PARENT_DIR=`readlink -f ${KERNELDIR}/..`;
 
 # Create bold and normal types of letter
   export t_bold=`tput bold`
@@ -34,8 +38,6 @@
   echo "${red}-----------------------------------"
   echo "${t_normal} Version $version"
   echo
-  echo
-
 
 # question:
   echo "${grn}${t_bold} Which device you would like to build?"
@@ -47,6 +49,10 @@
   echo " 4. captivatemtd_swapsd"
   echo " 5. vibrantmtd_swapsd"
   echo " 6. galaxysmtd_swapsd"
+  echo " 7. compile all"
+  echo
+  echo " ${grn}note: use this after kernel compiled"
+  echo " ${cya}n. copy neatkernel.zip to parent dirictory"
   echo
   echo " ${red}c. clean script"
   echo " r. Restart"
@@ -86,6 +92,54 @@ read enterLetter
   elif [ "$enterLetter" == "6" ]
     then
     ./build_kernel.sh galaxys_swapsd
+
+# compile all
+  elif [ "$enterLetter" == "7" ]
+    then
+    touch $KERNELDIR/all
+    ./clean_kernel.sh
+    ./build_kernel.sh captivate
+    if [ -d '/$PARENT_DIR/out' ]
+    then
+    cp $KERNELDIR/out/*.zip /$PARENT_DIR/out/
+    else
+    mkdir /$PARENT_DIR/out
+    cp $KERNELDIR/out/*.zip /$PARENT_DIR/out/  
+    fi
+    ./clean_kernel.sh
+    ./build_kernel.sh vibrant
+    cp $KERNELDIR/out/*.zip /$PARENT_DIR/out/
+    ./clean_kernel.sh
+    ./build_kernel.sh galaxys
+    cp $KERNELDIR/out/*.zip /$PARENT_DIR/out/
+    ./clean_kernel.sh
+    ./build_kernel.sh captivate_swapsd
+    cp $KERNELDIR/out/*.zip /$PARENT_DIR/out/
+    ./clean_kernel.sh
+    ./build_kernel.sh vibrant_swapsd
+    cp $KERNELDIR/out/*.zip /$PARENT_DIR/out/
+    ./clean_kernel.sh
+    ./build_kernel.sh galaxys_swapsd
+    cp $KERNELDIR/out/*.zip /$PARENT_DIR/out/
+    ./clean_kernel.sh
+    rm $KERNELDIR/all
+    echo " compile all kernels done "
+    ./menu.sh
+
+# copy neatkernel.zip to parent dirictory
+  elif [ "$enterLetter" == "n" ]
+    then
+    if [ -d /$PARENT_DIR/out ]
+    then
+    cp $KERNELDIR/out/*.zip /$PARENT_DIR/out/
+    echo " copy neatkernel.zip done "
+    ./menu.sh
+    else
+    mkdir /$PARENT_DIR/out
+    cp $KERNELDIR/out/*.zip /$PARENT_DIR/out/
+    echo " copy neatkernel.zip done " 
+    ./menu.sh
+    fi
 
 # clean script
   elif [ "$enterLetter" == "c" ]
