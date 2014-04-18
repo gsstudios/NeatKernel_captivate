@@ -96,7 +96,7 @@ if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 	# copy all needed to out kernel folder
 	rm $KERNELDIR/out/boot.img >> /dev/null;
 	rm $KERNELDIR/out/${NEAT_VER}_* >> /dev/null;
-	GETVER=`grep 'NeatKernel_v.*' arch/arm/configs/${KERNEL_CONFIG} | sed 's/.*_.//g' | sed 's/".*//g'`
+	GETVER=`grep 'NeatKernel_v.*' init/version.c | sed 's/.*_.//g' | sed 's/).*//g'`
 	cp $KERNELDIR/boot.img /$KERNELDIR/out/
 	cd $KERNELDIR/out/
 	zip -r ${NEAT_VER}_v${GETVER}-`date +"[%m-%d]-[%H-%M]"`.zip .
