@@ -35,5 +35,5 @@ find . -type f \( -iname \*.rej \
 					| parallel rm -fv {};
 
 echo "${bldcya}***** Cleaning Done *****${txtrst}";
-
+./menu.sh
 

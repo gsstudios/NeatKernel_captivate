@@ -110,4 +110,6 @@ if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 else
 	echo "${bldred}Kernel STUCK in BUILD!${txtrst}"
 fi;
+./menu.sh
+
 
