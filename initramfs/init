@@ -89,27 +89,14 @@ $BB mount -t yaffs2 /dev/block/mtdblock3 /cache
 $BB mount -t ext4 /dev/lvpool/userdata /data -o rw,noatime,nodiratime,data=writeback,barrier=0,nobh,nodev,nosuid,nomblk_io_submit,errors=panic,discard
 $BB mv /cache/boot.txt /cache/boot.bak
 
-
-CM_4_1=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.1" | $BB wc -l`;
-CM_4_1_0=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.1.0" | $BB wc -l`;
-CM_4_1_1=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.1.1" | $BB wc -l`;
-CM_4_1_2=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.1.2" | $BB wc -l`;
-CM_4_2=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.2" | $BB wc -l`;
-CM_4_2_0=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.2.0" | $BB wc -l`;
-CM_4_2_1=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.2.1" | $BB wc -l`;
-CM_4_2_2=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.2.2" | $BB wc -l`;
-CM_4_3=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3" | $BB wc -l`;
-CM_4_3_0=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3.0" | $BB wc -l`;
-CM_4_3_1=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3.1" | $BB wc -l`;
-CM_4_3_2=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3.2" | $BB wc -l`;
-CM_4_4=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.4" | $BB wc -l`;
-CM_4_4_0=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.4.0" | $BB wc -l`;
-CM_4_4_1=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.4.1" | $BB wc -l`;
-CM_4_4_2=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.4.2" | $BB wc -l`;
+CM_10_0=`$BB cat /system/build.prop | $BB grep "ro.build.version.sdk=16" | $BB wc -l`;
+CM_10_1=`$BB cat /system/build.prop | $BB grep "ro.build.version.sdk=17" | $BB wc -l`;
+CM_10_2=`$BB cat /system/build.prop | $BB grep "ro.build.version.sdk=18" | $BB wc -l`;
+CM_11_0=`$BB cat /system/build.prop | $BB grep "ro.build.version.sdk=19" | $BB wc -l`;
 
 USER_ACTIONS()
 {
-	if [ "$CM_4_1" -eq "1" ] || [ "$CM_4_1_0" -eq "1" ] || [ "$CM_4_1_1" -eq "1" ] || [ "$CM_4_1_2" -eq "1" ]; then
+	if [ "$CM_10_0" -eq "1" ]; then
 		$BB echo "Android or MIUI 4.1 Found";
 		$BB cp -a /res/cm_10_0/* /;
                 $BB rm /system/etc/vold.fstab;
@@ -123,7 +110,7 @@ USER_ACTIONS()
 		fi
 		BOOT;
 
-	elif [ "$CM_4_2" -eq "1" ] || [ "$CM_4_2_0" -eq "1" ] || [ "$CM_4_2_1" -eq "1" ] || [ "$CM_4_2_1" -eq "1" ]; then
+	elif [ "$CM_10_1" -eq "1" ]; then
 		$BB echo "Android or MIUI 4.2 Found";
 		$BB cp -a /res/cm_10_1/* /;
                 $BB rm /system/etc/vold.fstab;
@@ -137,7 +124,7 @@ USER_ACTIONS()
 		fi
 		BOOT;
 	
-	elif [ "$CM_4_3" -eq "1" ] || [ "$CM_4_3_0" -eq "1" ] || [ "$CM_4_3_1" -eq "1" ] || [ "$CM_4_3_2" -eq "1" ]; then
+	elif [ "$CM_10_2" -eq "1" ]; then
 		$BB echo "Android or MIUI 4.3 Found";
 		$BB cp -a /res/cm_10_2/* /;
 		if $BB [ -f /data/local/.bln ]; then
@@ -150,7 +137,7 @@ USER_ACTIONS()
 		$BB rm /system/bin/auditd;
 		BOOT;
 
-	elif [ "$CM_4_4" -eq "1" ] || [ "$CM_4_4_0" -eq "1" ] || [ "$CM_4_4_1" -eq "1" ] || [ "$CM_4_4_2" -eq "1" ]; then
+	elif [ "$CM_11_0" -eq "1" ]; then
 		$BB echo "Android or MIUI 4.4 Found";
 		$BB cp -a /res/cm_11_0/* /;
 		if $BB [ -f /data/local/.bln ]; then
