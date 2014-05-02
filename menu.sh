@@ -46,10 +46,12 @@ export PARENT_DIR=`readlink -f ${KERNELDIR}/..`;
   echo "${t_normal} 1. captivatemtd"
   echo " 2. vibrantmtd"
   echo " 3. galaxysmtd"
-  echo " 4. captivatemtd_swapsd"
-  echo " 5. vibrantmtd_swapsd"
-  echo " 6. galaxysmtd_swapsd"
-  echo " 7. compile all"
+  echo " 4. galaxysbmtd"
+  echo " 5. captivatemtd_swapsd"
+  echo " 6. vibrantmtd_swapsd"
+  echo " 7. galaxysmtd_swapsd"
+  echo " 8. galaxysbmtd_swapsd"
+  echo " 9. compile all"
   echo
   echo " ${grn}note: use this after kernel compiled"
   echo " ${cya}n. copy neatkernel.zip to parent dirictory"
@@ -78,23 +80,33 @@ read enterLetter
     then
     ./build_kernel.sh galaxys
 
-# captivatemtd_swapsd
+# galaxysbmtd
   elif [ "$enterLetter" == "4" ]
+    then
+    ./build_kernel.sh galaxysb
+
+# captivatemtd_swapsd
+  elif [ "$enterLetter" == "5" ]
     then
     ./build_kernel.sh captivate_swapsd
 
 # vibrantmtd_swapsd
-  elif [ "$enterLetter" == "5" ]
+  elif [ "$enterLetter" == "6" ]
     then
     ./build_kernel.sh vibrant_swapsd
 
 # galaxysmtd_swapsd
-  elif [ "$enterLetter" == "6" ]
+  elif [ "$enterLetter" == "7" ]
     then
     ./build_kernel.sh galaxys_swapsd
 
+# galaxysbmtd_swapsd
+  elif [ "$enterLetter" == "8" ]
+    then
+    ./build_kernel.sh galaxysb_swapsd
+
 # compile all
-  elif [ "$enterLetter" == "7" ]
+  elif [ "$enterLetter" == "9" ]
     then
     touch $KERNELDIR/all
     ./clean_kernel.sh
