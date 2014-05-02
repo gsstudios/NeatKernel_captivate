@@ -5,8 +5,8 @@ export PATH=/sbin
 
 busyboxboot rm /init
 busyboxboot rm /default.prop.galaxys
+busyboxboot rm /default.prop.galaxysb
 busyboxboot rm /default.prop.captivate
-busyboxboot rm /default.prop.vibrant
 
 # include device specific vars
 source /sbin/bootrec-device

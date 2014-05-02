@@ -1,0 +1,10 @@
+# Android fstab file.
+#<src>                                                  <mnt_point>         <type>    <mnt_flags and options>                               <fs_mgr_flags>
+# The filesystem that contains the filesystem checker binary (typically /system) cannot
+# specify MF_CHECK, and must come before any filesystems that do specify MF_CHECK
+
+# LVM Volumes
+#/dev/lvpool/system         /system               ext4      noatime,nodiratime,data=writeback,barrier=0,nobh,nodev,nomblk_io_submit,errors=panic    wait
+/dev/lvpool/system         /system               ext4      rw,noatime,nodiratime,data=writeback,barrier=0,nobh,nomblk_io_submit,errors=continue,noauto_da_alloc,journal_async_commit,discard   wait
+/dev/lvpool/userdata       /data                 ext4      rw,noatime,nodiratime,data=writeback,barrier=0,nobh,nomblk_io_submit,errors=continue,noauto_da_alloc,journal_async_commit,discard   wait,encryptable=footer,length=-16384
+
