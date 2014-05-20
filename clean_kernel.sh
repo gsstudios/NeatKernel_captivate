@@ -40,5 +40,5 @@ if [ -e $KERNELDIR/all ]
     then
     exit
     else
-    ./menu.sh  
+    ./menu 
     fi
