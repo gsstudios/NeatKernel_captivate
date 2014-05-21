@@ -24,7 +24,6 @@ cp initramfs/recovery/default.prop.captivate initramfs/recovery/default.prop
 
         vibrant)
             VARIANT="vibrant"
-cp initramfs/recovery/default.prop.vibrant initramfs/recovery/default.prop
             ;;
 
         galaxys_swapsd)
@@ -44,7 +43,6 @@ cp initramfs-swapsd/recovery/default.prop.captivate initramfs-swapsd/recovery/de
 
         vibrant_swapsd)
             VARIANT="vibrant_swapsd"
-cp initramfs-swapsd/recovery/default.prop.vibrant initramfs-swapsd/recovery/default.prop
             ;;
 
  *)
