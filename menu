@@ -54,7 +54,7 @@ export PARENT_DIR=`readlink -f ${KERNELDIR}/..`;
   echo " 9. compile all"
   echo
   echo " ${grn}note: use this after kernel compiled"
-  echo " ${cya}n. copy neatkernel.zip to parent dirictory"
+  echo " ${cya}n. copy neatkernel.zip to parent directory"
   echo
   echo " ${red}c. clean script"
   echo " r. Restart"
@@ -136,21 +136,27 @@ read enterLetter
     ./clean_kernel.sh
     rm $KERNELDIR/all
     echo " compile all kernels done "
-    ./menu.sh
+    ./menu
 
 # copy neatkernel.zip to parent dirictory
   elif [ "$enterLetter" == "n" ]
+    then
+    if [ -d /$KERNELDIR/out/*.zip ]
     then
     if [ -d /$PARENT_DIR/out ]
     then
     cp $KERNELDIR/out/*.zip /$PARENT_DIR/out/
     echo " copy neatkernel.zip done "
-    ./menu.sh
+    ./menu
     else
     mkdir /$PARENT_DIR/out
     cp $KERNELDIR/out/*.zip /$PARENT_DIR/out/
     echo " copy neatkernel.zip done " 
-    ./menu.sh
+    ./menu
+    fi
+    else
+    echo " no neatkernel.zip in ~/KERNELDIR/out " 
+    ./menu
     fi
 
 # clean script
@@ -161,7 +167,7 @@ read enterLetter
 # Restart
   elif [ "$enterLetter" == "r" ]
     then
-    ./menu.sh
+    ./menu
 
 # Exit
   elif [ "$enterLetter" == "x" ]
