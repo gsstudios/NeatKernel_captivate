@@ -178,7 +178,7 @@ exit 0
 # Other choice
   else
 echo "Invalid option"
-    continue
+    ./menu
 fi
 
 
