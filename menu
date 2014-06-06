@@ -141,7 +141,7 @@ read enterLetter
 # copy neatkernel.zip to parent dirictory
   elif [ "$enterLetter" == "n" ]
     then
-    if [ -d /$KERNELDIR/out/*.zip ]
+    if [ -e /$KERNELDIR/out/*.zip ]
     then
     if [ -d /$PARENT_DIR/out ]
     then
@@ -155,9 +155,10 @@ read enterLetter
     ./menu
     fi
     else
-    echo " no neatkernel.zip in ~/KERNELDIR/out " 
+    echo " no neatkernel.zip in ~/KERNELDIR/out "
+    fi 
     ./menu
-    fi
+    
 
 # clean script
   elif [ "$enterLetter" == "c" ]
