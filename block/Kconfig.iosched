@@ -21,6 +21,12 @@ config IOSCHED_DEADLINE
 	  a new point in the service tree and doing a batch of IO from there
 	  in case of expiry.
 
+config IOSCHED_FIFO
+	bool
+	default y
+	---help---
+	  Fifo is similar to no-op I/O scheduler and it's a minimal 
+
 config IOSCHED_ROW
 	tristate "ROW I/O scheduler"
 	---help---
@@ -89,6 +95,9 @@ choice
 	config DEFAULT_ZEN
 		bool "ZEN" if IOSCHED_ZEN=y
 
+	config DEFAULT_FIFO
+		bool "fifo" if IOSCHED_FIFO=y
+
 endchoice
 
 config DEFAULT_IOSCHED
@@ -98,6 +107,7 @@ config DEFAULT_IOSCHED
 	default "cfq" if DEFAULT_CFQ
 	default "noop" if DEFAULT_NOOP
 	default "zen" if DEFAULT_ZEN
+	default "fifo" if DEFAULT_FIFO
 
 endmenu
 
