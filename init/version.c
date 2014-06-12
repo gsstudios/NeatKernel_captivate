@@ -44,5 +44,5 @@ const char linux_banner[] =
 
 const char linux_proc_banner[] =
 	"%s version %s"
-	" (NeatKernel_v1.08)"
+	" (NeatKernel_v1.09)"
 	" (" LINUX_COMPILER ") %s\n";
