@@ -9,17 +9,17 @@ export PARENT_DIR=`readlink -f ${KERNELDIR}/..`;
 case "${1}" in
         galaxys)
             VARIANT="galaxys"
-cp initramfs/recovery/default.prop.galaxys initramfs/recovery/default.prop
+cp neatkernel-initramfs/initramfs/recovery/default.prop.galaxys neatkernel-initramfs/initramfs/recovery/default.prop
             ;;
 
         galaxysb)
             VARIANT="galaxysb"
-cp initramfs/recovery/default.prop.galaxysb initramfs/recovery/default.prop
+cp neatkernel-initramfs/initramfs/recovery/default.prop.galaxysb neatkernel-initramfs/initramfs/recovery/default.prop
             ;;
 
         captivate)
             VARIANT="captivate"
-cp initramfs/recovery/default.prop.captivate initramfs/recovery/default.prop
+cp neatkernel-initramfs/initramfs/recovery/default.prop.captivate neatkernel-initramfs/initramfs/recovery/default.prop
             ;;
 
         vibrant)
@@ -28,17 +28,17 @@ cp initramfs/recovery/default.prop.captivate initramfs/recovery/default.prop
 
         galaxys_swapsd)
             VARIANT="galaxys_swapsd"
-cp initramfs-swapsd/recovery/default.prop.galaxys initramfs-swapsd/recovery/default.prop
+cp neatkernel-initramfs/initramfs-swapsd/recovery/default.prop.galaxys neatkernel-initramfs/initramfs-swapsd/recovery/default.prop
             ;;
 
         galaxysb_swapsd)
             VARIANT="galaxysb_swapsd"
-cp initramfs-swapsd/recovery/default.prop.galaxysb initramfs-swapsd/recovery/default.prop
+cp neatkernel-initramfs/initramfs-swapsd/recovery/default.prop.galaxysb neatkernel-initramfs/initramfs-swapsd/recovery/default.prop
             ;;
 
         captivate_swapsd)
             VARIANT="captivate_swapsd"
-cp initramfs-swapsd/recovery/default.prop.captivate initramfs-swapsd/recovery/default.prop
+cp neatkernel-initramfs/initramfs-swapsd/recovery/default.prop.captivate neatkernel-initramfs/initramfs-swapsd/recovery/default.prop
             ;;
 
         vibrant_swapsd)
@@ -47,7 +47,7 @@ cp initramfs-swapsd/recovery/default.prop.captivate initramfs-swapsd/recovery/de
 
  *)
             VARIANT="captivate"
-cp initramfs/recovery/default.prop.captivate initramfs/recovery/default.prop
+cp neatkernel-initramfs/initramfs/recovery/default.prop.captivate neatkernel-initramfs/initramfs/recovery/default.prop
 esac
             
 NEAT_VER="NeatKernel_${VARIANT}"
