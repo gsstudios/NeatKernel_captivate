@@ -1,0 +1,60 @@
+How to build NeatKernel
+
+Basic knowledge of Linux and compiling is required to be able to build a kernel. You need Linux machine with git and linaro toolchain installed.
+
+Setup build environment
+Quote:
+In your home directory (~/) create the directories:
+
+Open a terminal
+
+     $ mkdir neat
+     $ cd neat
+
+Building a directory structure that will help keep us organized. The "mkdir" command creates a directory, and the "cd" command moves you into that directory.
+The directory structure is complete. Now, you are ready to clone kernel code.
+
+Setting up repositories
+
+Clone the main kernel repository, run this line in your terminal window:
+
+git clone -b master git://github.com/mohammad92/NeatKernel_captivate
+
+go to /neat/NeatKernel_captivate
+delete folder neatkernel-initramfs
+extract neatkernel-initramfs.tar.xz
+otherwise kernel will not boot.
+
+Toolchains
+
+Christopher83 Linaro GCC 4.9.1-2014.05 Toolchains thread http://forum.xda-developers.com/showthread.php?t=2098133
+direct download link http://www.mediafire.com/download/5mdqm1pa387660d/arm-cortex_a8-linux-gnueabi-linaro_4.9.1-2014.05-build_2014_05_17.tar.xz
+extract in home/neat
+
+Building
+
+Open a terminal and type:
+
+    $ cd ~/neat/NeatKernel_captivate
+    $ ./menu
+
+Neatkernel auto-maker menu will appear
+
+ " 1. captivatemtd"           #type 1 to compile captivate kernel.
+ " 2. vibrantmtd"             #type 2 to compile vibrant kernel.
+ " 3. galaxysmtd"             #type 3 to compile galaxys kernel.
+ " 4. galaxysbmtd"            #type 4 to compile galaxysb kernel.
+ " 5. captivatemtd_swapsd"    #type 5 to compile swapsd captivate kernel.
+ " 6. vibrantmtd_swapsd"      #type 6 to compile swapsd vibrant kernel.
+ " 7. galaxysmtd_swapsd"      #type 7 to compile swapsd galaxys kernel.
+ " 8. galaxysbmtd_swapsd"     #type 8 to compile swapsd galaxysb kernel.
+ " 9. compile all"            #type 9 to compile compile all kernels. will find compiled kernels in home/neat/out
+
+ "note: use this after kernel compiled"
+ " n. copy neatkernel.zip to parent directory"    #type n to copy neatkernel.zip to home/neat/out.
+
+ " c. clean script"           #type c will clean kernel directory.
+ " r. Restart"                #type r will restart Neatkernel auto-maker menu.
+ " x. Exit"                   #type x will exit Neatkernel auto-maker menu.
+
+
