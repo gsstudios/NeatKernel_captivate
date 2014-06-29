@@ -17,7 +17,7 @@
   clear
 
 # Create a variable to store the version
-  export version=0.2
+  export version=0.3
 
 # location
 export KERNELDIR=`readlink -f .`;
@@ -32,16 +32,17 @@ export PARENT_DIR=`readlink -f ${KERNELDIR}/..`;
   export cya=$(tput setaf 6)             #  cyan
 
 # Introducing test
-  echo
-  echo "${red}${t_bold}-----------------------------------"
-  echo "${blu} Neatkernel auto-maker menu"
-  echo "${red}-----------------------------------"
-  echo "${t_normal} Version $version"
-  echo
-
+  echo "${red}${t_bold}--------------------------------------------------------"
+  echo "${grn}  _    _            __   _  __                      _   "
+  echo "${grn} | \  | | ___ _____|  |_| |/ /___  _ __ _ ___  ___ | |  "
+  echo "${grn} |  \ ' |/ _ \ ___ |  __| ' // _ \| '__| '_  \/ _ \| |  "
+  echo "${grn} | | \  |  __/' __ |  | | . \  __/| |  | | | |  __/| |_ "
+  echo "${grn} |_|  \_|\___ |____|\___|_|\_\____|_|  |_| |_|\___ |___|"
+  echo "${red}${t_bold}--------------------------------------------------------"
+  echo "${blu} Neatkernel auto-maker menu Version $version"
+  echo "${red}${t_bold}--------------------------------------------------------"
 # question:
   echo "${grn}${t_bold} Which device you would like to build?"
-
 # Answers:
   echo "${t_normal} 1. captivatemtd"
   echo " 2. vibrantmtd"
@@ -52,10 +53,8 @@ export PARENT_DIR=`readlink -f ${KERNELDIR}/..`;
   echo " 7. galaxysmtd_swapsd"
   echo " 8. galaxysbmtd_swapsd"
   echo " 9. compile all"
-  echo
   echo " ${grn}note: use this after kernel compiled"
   echo " ${cya}n. copy neatkernel.zip to parent directory"
-  echo
   echo " ${red}c. clean script"
   echo " r. Restart"
   echo " x. Exit"
