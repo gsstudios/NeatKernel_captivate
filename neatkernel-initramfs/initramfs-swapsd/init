@@ -163,6 +163,12 @@ $BB fstrim /data
 
 $BB chmod 644 /system/lib/hw/lights.aries.so
 
+if $BB [ ! -d /system/etc/init.d ]; then 
+	$BB echo "making init.d";
+	$BB mkdir /system/etc/init.d;
+	$BB chmod 777 /system/etc/init.d;
+fi
+
 }
 
 $BB echo "command line:"
