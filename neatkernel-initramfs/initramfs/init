@@ -190,6 +190,39 @@ if $BB [ ! -d /system/etc/init.d ]; then
 	$BB chmod 777 /system/etc/init.d;
 fi
 
+NEATVER=`$BB uname -r`
+$BB echo "version: $NEATVER"
+
+if $BB [ ! -d /system/lib/modules ]; then 
+    $BB echo "making modules directory"
+    $BB mkdir /system/lib/modules
+    $BB chmod 777 /system/lib/modules
+fi
+
+if $BB [ ! -d /.NeatKernel ]; then
+    $BB echo "making /.NeatKernel"
+    $BB touch /.NeatKernel
+fi
+
+INSTALLED_NEATKERNEL_VER=$($BB cat /.NeatKernel)
+$BB echo $INSTALLED_NEATKERNEL_VER
+
+if $BB [ "`/busybox grep $NEATVER /system/lib/modules/ansi_cprng.ko`" ] && $BB [ "$NEATVER" = "$INSTALLED_VER" ]; then
+    $BB echo "kernel files already installed, nothing to do"
+elif $BB [ "`/busybox grep $NEATVER /res/lib/modules/ansi_cprng.ko`" ]; then
+    $BB echo "updating modules..."
+
+    $BB echo "removing old modules..."
+    $BB rm /system/lib/modules/*
+
+    $BB echo "updating modules..."
+    $BB cp -a /res/lib/modules/* /system/lib/modules/
+
+    if $BB [ "$NEATVER" != "$INSTALLED_NEATKERNEL_VER" ]; then
+	$BB echo "$NEATVER" > /.NeatKernel
+    fi
+fi
+
 $BB echo "removing old Mem libs";
 $BB rm /system/lib/libOMX.SEC.AVC.Decoder.so;
 $BB rm /system/lib/libOMX.SEC.AVC.Encoder.so;
@@ -197,8 +230,10 @@ $BB rm /system/lib/libOMX.SEC.M4V.Decoder.so;
 $BB rm /system/lib/libOMX.SEC.M4V.Encoder.so;
 $BB rm /system/lib/libSEC_OMX_Core.so;
 $BB rm /system/lib/libstagefright_omx.so;
-$BB echo "adding BigMem libs";
-$BB cp -a /res/lib/* /system/lib/;
+
+$BB echo "adding BigMem libs...";
+$BB cp -a /res/lib/bigmemlibs/* /system/lib/;
+
 $BB chmod 644 /system/lib/libOMX.SEC.AVC.Decoder.so;
 $BB chmod 644 /system/lib/libOMX.SEC.AVC.Encoder.so;
 $BB chmod 644 /system/lib/libOMX.SEC.M4V.Decoder.so;
@@ -264,8 +299,10 @@ $BB rm -rf /res/cm_10_0
 $BB rm -rf /res/cm_10_1
 $BB rm -rf /res/cm_10_2
 $BB rm -rf /res/cm_11_0
+$BB rm -rf /res/lib
 $BB rm -rf /recovery
 $BB rm /res/vold.fstab
+$BB rm /res/init.aries.gps.rc.vibrant
 
 $BB date >>boot.txt
 $BB rm -fr /dev/*
