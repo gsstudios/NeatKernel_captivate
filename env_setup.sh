@@ -24,6 +24,7 @@ cp neatkernel-initramfs/initramfs/recovery/default.prop.captivate neatkernel-ini
 
         vibrant)
             VARIANT="vibrant"
+cp neatkernel-initramfs/initramfs/recovery/default.prop.vibrant neatkernel-initramfs/initramfs/recovery/default.prop
             ;;
 
         galaxys_swapsd)
@@ -43,6 +44,7 @@ cp neatkernel-initramfs/initramfs-swapsd/recovery/default.prop.captivate neatker
 
         vibrant_swapsd)
             VARIANT="vibrant_swapsd"
+cp neatkernel-initramfs/initramfs-swapsd/recovery/default.prop.vibrant neatkernel-initramfs/initramfs-swapsd/recovery/default.prop
             ;;
 
  *)
