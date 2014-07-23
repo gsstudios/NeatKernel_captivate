@@ -41,8 +41,7 @@ if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 fi;
 
 # remove previous initramfs files
-rm -rf $KERNELDIR/neatkernel-initramfs/initramfs/res/lib/modules >> /dev/null;
-rm -rf $KERNELDIR/neatkernel-initramfs/initramfs-swapsd/res/lib/modules >> /dev/null;
+rm -rf $KERNELDIR/initramfs/res/lib/modules >> /dev/null;
 rm -rf $KERNELDIR/tmp_modules >> /dev/null;
 rm -rf $KERNELDIR/temp >> /dev/null;
 
@@ -53,8 +52,7 @@ rm -f $KERNELDIR/usr/initramfs_data.o >> /dev/null;
 # remove all old modules before compile
 find $KERNELDIR -name "*.ko" | parallel rm -rf {};
 
-mkdir -p $KERNELDIR/neatkernel-initramfs/initramfs/res/lib/modules
-mkdir -p $KERNELDIR/neatkernel-initramfs/initramfs-swapsd/res/lib/modules
+mkdir -p $KERNELDIR/initramfs/res/lib/modules
 mkdir -p $KERNELDIR/tmp_modules
 
 # make modules and install
@@ -74,12 +72,9 @@ fi;
 
 # copy modules
 echo "${bldcya}***** Copying modules *****${txtrst}"
-find $KERNELDIR/tmp_modules -name '*.ko' | parallel cp -av {} $KERNELDIR/neatkernel-initramfs/initramfs/res/lib/modules;
-find $KERNELDIR/tmp_modules -name '*.ko' | parallel cp -av {} $KERNELDIR/neatkernel-initramfs/initramfs-swapsd/res/lib/modules;
-find $KERNELDIR/neatkernel-initramfs/initramfs/res/lib/modules -name '*.ko' | parallel ${CROSS_COMPILE}strip --strip-debug {};
-find $KERNELDIR/neatkernel-initramfs/initramfs-swapsd/res/lib/modules -name '*.ko' | parallel ${CROSS_COMPILE}strip --strip-debug {};
-chmod 755 $KERNELDIR/neatkernel-initramfs/initramfs/res/lib/modules/*;
-chmod 755 $KERNELDIR/neatkernel-initramfs/initramfs-swapsd/res/lib/modules/*;
+find $KERNELDIR/tmp_modules -name '*.ko' | parallel cp -av {} $KERNELDIR/initramfs/res/lib/modules;
+find $KERNELDIR/itramfs/initramfs/res/lib/modules -name '*.ko' | parallel ${CROSS_COMPILE}strip --strip-debug {};
+chmod 755 $KERNELDIR/initramfs/res/lib/modules/*;
 
 # remove temp module files generated during compile
 echo "${bldcya}***** Removing temp module stage 2 files *****${txtrst}"
@@ -88,7 +83,7 @@ rm -rf $KERNELDIR/tmp_modules >> /dev/null
 # make zImage
 echo "${bldcya}***** Compiling kernel *****${txtrst}"
 if [ $USER != "root" ]; then
-	make -j$NUMBEROFCPUS zImage
+	make -j$NUMBEROFCPUS zImage CONFIG_LOCALVERSION="$KERNEL_LOCAL_VERSION"
 else
 	nice -n -15 make -j$NUMBEROFCPUS zImage
 fi;
@@ -101,7 +96,7 @@ if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 	# copy all needed to out kernel folder
 	rm $KERNELDIR/out/boot.img >> /dev/null;
 	rm $KERNELDIR/out/${NEAT_VER}_* >> /dev/null;
-	GETVER=`grep 'NeatKernel_v.*' init/version.c | sed 's/.*_.//g' | sed 's/).*//g'`
+	GETVER=`grep 'NeatKernel_v.*' env_setup.sh | sed 's/.*_.//g' | sed 's/".*//g'`
 	cp $KERNELDIR/boot.img /$KERNELDIR/out/
 	cd $KERNELDIR/out/
 	zip -r ${NEAT_VER}_v${GETVER}-`date +"[%m-%d]-[%H-%M]"`.zip .

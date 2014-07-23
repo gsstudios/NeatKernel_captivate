@@ -16,14 +16,12 @@ rm -f $KERNELDIR/NeatKernel*.tar;
 rm -f $KERNELDIR/out/boot.img;
 rm -f $KERNELDIR/boot.img;
 rm -rf $KERNELDIR/out/system/lib/modules;
-rm -rf $KERNELDIR/neatkernel-initramfs/initramfs/res/lib/modules;
-rm -rf $KERNELDIR/neatkernel-initramfs/initramfs-swapsd/res/lib/modules;
+rm -rf $KERNELDIR/initramfs/res/lib/modules;
 rm -rf $KERNELDIR/tmp_modules;
 rm -rf $KERNELDIR/temp;
 rm -f $KERNELDIR/out/NeatKernel*;
 rm -rf $KERNELDIR/tmp;
-rm -f $KERNELDIR/neatkernel-initramfs/initramfs/recovery/default.prop;
-rm -f $KERNELDIR/neatkernel-initramfs/initramfs-swapsd/recovery/default.prop;
+rm -f $KERNELDIR/initramfs/recovery/default.prop;
 rm source;
 
 find . -type f \( -iname \*.rej \

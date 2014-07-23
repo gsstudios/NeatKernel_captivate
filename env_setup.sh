@@ -9,47 +9,27 @@ export PARENT_DIR=`readlink -f ${KERNELDIR}/..`;
 case "${1}" in
         galaxys)
             VARIANT="galaxys"
-cp neatkernel-initramfs/initramfs/recovery/default.prop.galaxys neatkernel-initramfs/initramfs/recovery/default.prop
+cp initramfs/recovery/default.prop.galaxys initramfs/recovery/default.prop
             ;;
 
         galaxysb)
             VARIANT="galaxysb"
-cp neatkernel-initramfs/initramfs/recovery/default.prop.galaxysb neatkernel-initramfs/initramfs/recovery/default.prop
+cp initramfs/recovery/default.prop.galaxysb initramfs/recovery/default.prop
             ;;
 
         captivate)
             VARIANT="captivate"
-cp neatkernel-initramfs/initramfs/recovery/default.prop.captivate neatkernel-initramfs/initramfs/recovery/default.prop
+cp initramfs/recovery/default.prop.captivate initramfs/recovery/default.prop
             ;;
 
         vibrant)
             VARIANT="vibrant"
-cp neatkernel-initramfs/initramfs/recovery/default.prop.vibrant neatkernel-initramfs/initramfs/recovery/default.prop
-            ;;
-
-        galaxys_swapsd)
-            VARIANT="galaxys_swapsd"
-cp neatkernel-initramfs/initramfs-swapsd/recovery/default.prop.galaxys neatkernel-initramfs/initramfs-swapsd/recovery/default.prop
-            ;;
-
-        galaxysb_swapsd)
-            VARIANT="galaxysb_swapsd"
-cp neatkernel-initramfs/initramfs-swapsd/recovery/default.prop.galaxysb neatkernel-initramfs/initramfs-swapsd/recovery/default.prop
-            ;;
-
-        captivate_swapsd)
-            VARIANT="captivate_swapsd"
-cp neatkernel-initramfs/initramfs-swapsd/recovery/default.prop.captivate neatkernel-initramfs/initramfs-swapsd/recovery/default.prop
-            ;;
-
-        vibrant_swapsd)
-            VARIANT="vibrant_swapsd"
-cp neatkernel-initramfs/initramfs-swapsd/recovery/default.prop.vibrant neatkernel-initramfs/initramfs-swapsd/recovery/default.prop
+cp initramfs/recovery/default.prop.vibrant initramfs/recovery/default.prop
             ;;
 
  *)
             VARIANT="captivate"
-cp neatkernel-initramfs/initramfs/recovery/default.prop.captivate neatkernel-initramfs/initramfs/recovery/default.prop
+cp initramfs/recovery/default.prop.captivate initramfs/recovery/default.prop
 esac
             
 NEAT_VER="NeatKernel_${VARIANT}"
@@ -78,7 +58,7 @@ export KBUILD_BUILD_HOST=ubuntu
 export ARCH=arm;
 export USE_SEC_FIPS_MODE=true;
 export KERNEL_CONFIG="${VARIANT}_defconfig";
-
+export LOCALVERSION="_NeatKernel_v1.10"
 
 # build script
 export USER=`whoami`
