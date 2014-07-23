@@ -59,6 +59,7 @@ export PARENT_DIR=`readlink -f ${KERNELDIR}/..`;
   echo "${t_normal}${t_bold}--------------------------------------------------------"
   echo " ${grn}note: use this after kernel compiled"
   echo " ${wht}n. copy neatkernel.zip to parent directory"
+  echo " ${ylw}t. copy neatkernel.zip to parent directory"
   echo "${t_normal}${t_bold}--------------------------------------------------------"
   echo " ${grn}c. clean script"
   echo " ${red}r. Restart"
@@ -138,6 +139,26 @@ read enterLetter
     fi 
     ./menu
     
+# copy neatkernel.tar to parent dirictory
+  elif [ "$enterLetter" == "t" ]
+    then
+    if [ -e /$KERNELDIR/out/*.tar ]
+    then
+    if [ -d /$PARENT_DIR/out ]
+    then
+    cp $KERNELDIR/out/*.tar /$PARENT_DIR/out/
+    echo " copy neatkernel.tar done "
+    ./menu
+    else
+    mkdir /$PARENT_DIR/out
+    cp $KERNELDIR/out/*.tar /$PARENT_DIR/out/
+    echo " copy neatkernel.tar done " 
+    ./menu
+    fi
+    else
+    echo " no neatkernel.tar in ~/KERNELDIR/out "
+    fi 
+    ./menu
 
 # clean script
   elif [ "$enterLetter" == "c" ]

@@ -95,13 +95,14 @@ if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 	./utilities/acp -fp zImage boot.img
 	# copy all needed to out kernel folder
 	rm $KERNELDIR/out/boot.img >> /dev/null;
-	rm $KERNELDIR/out/${NEAT_VER}_* >> /dev/null;
+	rm $KERNELDIR/out/NeatKernel* >> /dev/null;
 	GETVER=`grep 'NeatKernel_v.*' env_setup.sh | sed 's/.*_.//g' | sed 's/".*//g'`
+        BUILDTIME=`date +"[%m-%d]-[%H-%M]"`
 	cp $KERNELDIR/boot.img /$KERNELDIR/out/
 	cd $KERNELDIR/out/
-	zip -r ${NEAT_VER}_v${GETVER}-`date +"[%m-%d]-[%H-%M]"`.zip .
+	zip -r ${NEAT_VER}_v${GETVER}-${BUILDTIME}.zip .
 	cd $KERNELDIR
-        tar cvf `echo ${NEAT_VER}_v${GETVER}`.tar zImage
+        tar cvf `echo ${NEAT_VER}_v${GETVER}`-${BUILDTIME}.tar zImage
         cp $KERNELDIR/${NEAT_VER}_*.tar /$KERNELDIR/out/
 	echo "${bldcya}***** Ready to Roar *****${txtrst}";
 	# finished? get elapsed time
