@@ -17,7 +17,7 @@
   clear
 
 # Create a variable to store the version
-  export version=0.4
+  export version=0.5
 
 # location
 export KERNELDIR=`readlink -f .`;
@@ -100,19 +100,24 @@ read enterLetter
     if [ -d '/$PARENT_DIR/out' ]
     then
     cp $KERNELDIR/out/*.zip /$PARENT_DIR/out/
+    cp $KERNELDIR/out/*.tar /$PARENT_DIR/out/
     else
     mkdir /$PARENT_DIR/out
-    cp $KERNELDIR/out/*.zip /$PARENT_DIR/out/  
+    cp $KERNELDIR/out/*.zip /$PARENT_DIR/out/
+    cp $KERNELDIR/out/*.tar /$PARENT_DIR/out/  
     fi
     ./clean_kernel.sh
     ./build_kernel.sh vibrant
     cp $KERNELDIR/out/*.zip /$PARENT_DIR/out/
+    cp $KERNELDIR/out/*.tar /$PARENT_DIR/out/
     ./clean_kernel.sh
     ./build_kernel.sh galaxys
     cp $KERNELDIR/out/*.zip /$PARENT_DIR/out/
+    cp $KERNELDIR/out/*.tar /$PARENT_DIR/out/
     ./clean_kernel.sh
     ./build_kernel.sh galaxysb
     cp $KERNELDIR/out/*.zip /$PARENT_DIR/out/
+    cp $KERNELDIR/out/*.tar /$PARENT_DIR/out/
     ./clean_kernel.sh
     rm $KERNELDIR/all
     echo " compile all kernels done "
