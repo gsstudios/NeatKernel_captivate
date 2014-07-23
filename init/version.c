@@ -44,5 +44,5 @@ const char linux_banner[] =
 
 const char linux_proc_banner[] =
 	"%s version %s"
-	" (eng mohammad.afaneh)"
+	" (mohammad.afaneh)"
 	" (" LINUX_COMPILER ") %s\n";
