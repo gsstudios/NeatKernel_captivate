@@ -83,7 +83,7 @@ rm -rf $KERNELDIR/tmp_modules >> /dev/null
 # make zImage
 echo "${bldcya}***** Compiling kernel *****${txtrst}"
 if [ $USER != "root" ]; then
-	make -j$NUMBEROFCPUS zImage CONFIG_LOCALVERSION="$KERNEL_LOCAL_VERSION"
+	make -j$NUMBEROFCPUS zImage
 else
 	nice -n -15 make -j$NUMBEROFCPUS zImage
 fi;
