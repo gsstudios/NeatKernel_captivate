@@ -292,7 +292,8 @@ if $BB grep -q bootmode=2 /proc/cmdline || $BB grep -q bootmode=9 /proc/cmdline 
     # check for SwapSD for recovery
     if [ "$SWAPSD_CHECK" -eq "1" ]; then
         $BB cp $SWAPSD_CHECK_FILE /;  
-    fi  
+    fi
+    $BB cp $BB /sbin/busyboxboot;
     $BB echo 0 > /sys/class/power_supply/battery/charging_mode_booting;
 else
     USER_ACTIONS;
