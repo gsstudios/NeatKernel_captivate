@@ -260,6 +260,7 @@ elif $BB [ "`$BB grep $NEATVER /res/lib/modules/ansi_cprng.ko`" ]; then
     fi
 fi
 
+if [ "$CM_11_0" -eq "1" ]; then
 $BB echo "removing old Memlibs...";
 $BB rm /system/lib/libOMX.SEC.AVC.Decoder.so;
 $BB rm /system/lib/libOMX.SEC.AVC.Encoder.so;
@@ -267,16 +268,15 @@ $BB rm /system/lib/libOMX.SEC.M4V.Decoder.so;
 $BB rm /system/lib/libOMX.SEC.M4V.Encoder.so;
 $BB rm /system/lib/libSEC_OMX_Core.so;
 $BB rm /system/lib/libstagefright_omx.so;
-
 $BB echo "updating BigMemlibs...";
 $BB cp -a /res/lib/bigmemlibs/* /system/lib/;
-
 $BB chmod 644 /system/lib/libOMX.SEC.AVC.Decoder.so;
 $BB chmod 644 /system/lib/libOMX.SEC.AVC.Encoder.so;
 $BB chmod 644 /system/lib/libOMX.SEC.M4V.Decoder.so;
 $BB chmod 644 /system/lib/libOMX.SEC.M4V.Encoder.so;
 $BB chmod 644 /system/lib/libSEC_OMX_Core.so;
 $BB chmod 644 /system/lib/libstagefright_omx.so;
+fi
 
 }
 
