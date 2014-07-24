@@ -177,7 +177,7 @@ USER_ACTIONS()
                 # check for SwapSD
                 if [ "$SWAPSD_CHECK" -eq "1" ]; then
                   $BB rm /fstab.aries;
-                  $BB cp /res/fstab.aries.swapsd /fstab.aries;
+                  $BB cp /res/fstab.aries.swapsd.cm10.2 /fstab.aries;
                 fi
 		if $BB [ -f /data/local/.bln ]; then
 	    		$BB echo "updating BLN lights.aries.so...";
@@ -200,7 +200,7 @@ USER_ACTIONS()
                 # check for SwapSD
                 if [ "$SWAPSD_CHECK" -eq "1" ]; then
                   $BB rm /fstab.aries;
-                  $BB cp /res/fstab.aries.swapsd /fstab.aries;
+                  $BB cp /res/fstab.aries.swapsd.cm11 /fstab.aries;
                 fi
 		if $BB [ -f /data/local/.bln ]; then
 	    		$BB echo "updating BLN lights.aries.so...";
@@ -345,7 +345,8 @@ $BB rm -rf /res/lib
 $BB rm -rf /recovery
 $BB rm /res/vold.fstab
 $BB rm /res/vold.fstab.swapsd
-$BB rm /res/fstab.aries.swapsd
+$BB rm /res/fstab.aries.swapsd.cm10.2
+$BB rm /res/fstab.aries.swapsd.cm11
 $BB rm /res/init.aries.gps.rc.vibrant
 
 $BB date >>boot.txt
