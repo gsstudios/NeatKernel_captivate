@@ -42,6 +42,7 @@ ln -s ${KERNELDIR} source;
 if [ ! -e /usr/bin/parallel ]; then
 	echo "You must install 'parallel' by this script to continue.";
 	sudo dpkg -i ${KERNELDIR}/utilities/parallel_20120422-1_all.deb
+        sudo sed -i "s|defined[ \t]@|@|g" /usr/bin/parallel
 fi
 
 # check if ccache installed, if not install
