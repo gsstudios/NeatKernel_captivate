@@ -27,8 +27,8 @@ otherwise kernel will not boot.
 
 Toolchains
 
-Christopher83 Linaro GCC 4.9.1-2014.05 Toolchains thread http://forum.xda-developers.com/showthread.php?t=2098133
-direct download link http://www.mediafire.com/download/3c9a10ho9o69kod/arm-cortex_a8-linux-gnueabi-linaro_4.9.1-2014.07-build_2014_07_19.tar.xz
+Christopher83 Linaro GCC 4.9.2-2014.08 Toolchains thread http://forum.xda-developers.com/showthread.php?t=2098133
+direct download link http://www.mediafire.com/download/aabkggjzjrk0wia/arm-cortex_a8-linux-gnueabi-linaro_4.9.2-2014.08-build_2014_08_30.tar.xz
 extract in home/neat
 
 Building
