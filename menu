@@ -17,55 +17,87 @@
   clear
 
 # Create a variable to store the version
-  export version=0.5
+  export version=0.6
 
 # location
 export KERNELDIR=`readlink -f .`;
 export PARENT_DIR=`readlink -f ${KERNELDIR}/..`;
 
-# Create bold and normal types of letter
-  export undrln=$(tput smul)     # underline
-  export t_bold=$(tput bold)     # make bold
-  export t_normal=$(tput sgr0)   # text reset
-
-  export blk="$(tput setaf 0)"   # Black - Regular
-  export red="$(tput setaf 1)"   # Red
-  export grn="$(tput setaf 2)"   # Green
-  export ylw="$(tput setaf 3)"   # Yellow
-  export blu="$(tput setaf 4)"   # Blue
-  export pur="$(tput setaf 5)"   # Purple
-  export cyn="$(tput setaf 6)"   # Cyan
-  export wht="$(tput setaf 7)"   # White
-
+# Colorize and add text parameters
+export red=$(tput setaf 1)             #  red
+export grn=$(tput setaf 2)             #  green
+export ylw=$(tput setaf 3)             #  Yellow
+export blu=$(tput setaf 4)             #  blue
+export pur=$(tput setaf 5)             #  Purple
+export cya=$(tput setaf 6)             #  cyan
+export wht=$(tput setaf 7)             #  White
+export txtbld=$(tput bold)             #  Bold
+export bldred=${txtbld}$(tput setaf 1) #  Bold red
+export bldgrn=${txtbld}$(tput setaf 2) #  Bold green
+export bldblu=${txtbld}$(tput setaf 4) #  Bold blue
+export bldcya=${txtbld}$(tput setaf 6) #  Bold cyan
+export txtrst=$(tput sgr0)             #  Reset
 
 # Introducing test
-  echo "${t_normal}${t_bold}--------------------------------------------------------"
-  echo "${grn}  _    _            __   _  __                      _   "
-  echo "${grn} | \  | | ___ _____|  |_| |/ /___  _ __ _ ___  ___ | |  "
-  echo "${grn} |  \ ' |/ _ \ ___ |  __| ' // _ \| '__| '_  \/ _ \| |  "
-  echo "${grn} | | \  |  __/' __ |  | | . \  __/| |  | | | |  __/| |_ "
-  echo "${grn} |_|  \_|\___ |____|\___|_|\_\____|_|  |_| |_|\___ |___|"
-  echo "${t_normal}${t_bold}--------------------------------------------------------"
-  echo "${red} Neatkernel auto-maker menu Version $version"
-  echo "${t_normal}${t_bold}--------------------------------------------------------"
+
+if [ -e /$KERNELDIR/out/*.zip ] && [ -e /$KERNELDIR/out/*.tar ]
+  then
+
+  echo "${txtrst}${txtbld}--------------------------------------------------------${txtrst}"
+  echo "${bldgrn}                                                  "
+  echo "  _    _            __   _  __                      _   "
+  echo " | \  | | ___ _____|  |_| |/ /___  _ __ _ ___  ___ | |  "
+  echo " |  \ ' |/ _ \ ___ |  __| ' // _ \| '__| '_  \/ _ \| |  "
+  echo " | | \  |  __/' __ |  | | . \  __/| |  | | | |  __/| |_ "
+  echo " |_|  \_|\___ |____|\___|_|\_\____|_|  |_| |_|\___ |___|${txtrst}"
+  echo "${txtbld}--------------------------------------------------------${txtrst}"
+  echo "${red} Neatkernel auto-maker menu ${bldcya}Version $version${txtrst}"
+  echo "${txtbld}--------------------------------------------------------${txtrst}"
 # question:
-  echo "${grn}${t_bold} Which device you would like to build?"
+  echo "${bldgrn} Which device you would like to build?${txtrst}"
 # Answers:
-  echo "${t_normal} 1. captivatemtd"
+  echo " 1. captivatemtd"
   echo " 2. vibrantmtd"
   echo " 3. galaxysmtd"
   echo " 4. galaxysbmtd"
   echo " 5. compile all"
-  echo "${t_normal}${t_bold}--------------------------------------------------------"
-  echo " ${grn}note: use this after kernel compiled"
-  echo " ${wht}n. copy neatkernel.zip to parent directory"
-  echo " ${ylw}t. copy neatkernel.zip to parent directory"
-  echo "${t_normal}${t_bold}--------------------------------------------------------"
-  echo " ${grn}c. clean script"
-  echo " ${red}r. Restart"
-  echo " ${blu}x. Exit"
-  echo "${t_normal}${t_bold}--------------------------------------------------------"
+  echo "${txtbld}--------------------------------------------------------${txtrst}"
+  echo "${grn} note: use this after kernel compiled${txtrst}"
+  echo " ${wht}n. copy neatkernel.zip to parent directory${txtrst}"
+  echo " ${ylw}t. copy neatkernel.tar to parent directory${txtrst}"
+  echo "${txtbld}--------------------------------------------------------${txtrst}"
+  echo " ${grn}c. clean script${txtrst}"
+  echo " ${red}r. Restart${txtrst}"
+  echo " ${blu}x. Exit${txtrst}"
+  echo "${txtbld}--------------------------------------------------------${txtrst}"
   
+else
+
+  echo "${txtrst}${txtbld}--------------------------------------------------------${txtrst}"
+  echo "${bldgrn}                                                  "
+  echo "  _    _            __   _  __                      _   "
+  echo " | \  | | ___ _____|  |_| |/ /___  _ __ _ ___  ___ | |  "
+  echo " |  \ ' |/ _ \ ___ |  __| ' // _ \| '__| '_  \/ _ \| |  "
+  echo " | | \  |  __/' __ |  | | . \  __/| |  | | | |  __/| |_ "
+  echo " |_|  \_|\___ |____|\___|_|\_\____|_|  |_| |_|\___ |___|${txtrst}"
+  echo "${txtbld}--------------------------------------------------------${txtrst}"
+  echo "${red} Neatkernel auto-maker menu ${bldcya}Version $version${txtrst}"
+  echo "${txtbld}--------------------------------------------------------${txtrst}"
+# question:
+  echo "${bldgrn} Which device you would like to build?${txtrst}"
+# Answers:
+  echo " 1. captivatemtd"
+  echo " 2. vibrantmtd"
+  echo " 3. galaxysmtd"
+  echo " 4. galaxysbmtd"
+  echo " 5. compile all"
+  echo "${txtbld}--------------------------------------------------------${txtrst}"
+  echo " ${grn}c. clean script${txtrst}"
+  echo " ${red}r. Restart${txtrst}"
+  echo " ${blu}x. Exit${txtrst}"
+  echo "${txtbld}--------------------------------------------------------${txtrst}"
+
+fi 
 
 # Read the letter the user gives
   echo
