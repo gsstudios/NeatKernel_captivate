@@ -66,7 +66,7 @@ export USER=`whoami`
 export TMPFILE=`mktemp -t`;
 
 # system compiler
-export CROSS_COMPILE=$PARENT_DIR/arm-cortex_a8-linux-gnueabi-linaro_4.9.2-2014.08/bin/arm-cortex_a8-linux-gnueabi-;
+export CROSS_COMPILE=$PARENT_DIR/arm-cortex_a8-linux-gnueabi-linaro_4.9.2-2014.10/bin/arm-cortex_a8-linux-gnueabi-;
 #export CROSS_COMPILE=$PARENT_DIR/linaro-toolchain-4.7-2013.8/bin/arm-eabi-;
 
 export NUMBEROFCPUS=`grep 'processor' /proc/cpuinfo | wc -l`;
