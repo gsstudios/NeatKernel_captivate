@@ -52,14 +52,14 @@ if [ ! -e /usr/bin/ccache ]; then
 fi
 
 #name
-export KBUILD_BUILD_USER=mohammad.afaneh
+export KBUILD_BUILD_USER=gsstudios
 export KBUILD_BUILD_HOST=ubuntu
 
 # kernel
 export ARCH=arm;
 export USE_SEC_FIPS_MODE=true;
 export KERNEL_CONFIG="${VARIANT}_defconfig";
-export LOCALVERSION="_NeatKernel2.0_b001"
+export LOCALVERSION="_NeatKernel_v2.0b001"
 
 # build script
 export USER=`whoami`
