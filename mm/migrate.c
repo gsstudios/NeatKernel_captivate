@@ -300,11 +300,8 @@ static int migrate_page_move_mapping(struct address_space *mapping,
 
 	if (!mapping) {
 		/* Anonymous page without mapping */
-		if (page_count(page) != 1) {
-			printk("migrate_page_move_mapping page count(%d) != 1\n", page_count(page));
-			dump_page(page);
+		if (page_count(page) != 1)
 			return -EAGAIN;
-		}
 		return 0;
 	}
 
@@ -316,15 +313,11 @@ static int migrate_page_move_mapping(struct address_space *mapping,
 	expected_count = 2 + page_has_private(page);
 	if (page_count(page) != expected_count ||
 		radix_tree_deref_slot_protected(pslot, &mapping->tree_lock) != page) {
-		printk("migrate_page_move_mapping page count(%d) != expected_count(%d)\n", page_count(page), expected_count);
-		dump_page(page);
 		spin_unlock_irq(&mapping->tree_lock);
 		return -EAGAIN;
 	}
 
 	if (!page_freeze_refs(page, expected_count)) {
-		printk("migrate_page_move_mapping !page_freeze_refs\n");
-		dump_page(page);
 		spin_unlock_irq(&mapping->tree_lock);
 		return -EAGAIN;
 	}
@@ -338,7 +331,6 @@ static int migrate_page_move_mapping(struct address_space *mapping,
 	 */
 	if (mode == MIGRATE_ASYNC && head &&
 			!buffer_migrate_lock_buffers(head, mode)) {
-		printk("migrate_page_move_mapping !buffer_migrate_lock_buffers\n");
 		page_unfreeze_refs(page, expected_count);
 		spin_unlock_irq(&mapping->tree_lock);
 		return -EAGAIN;
@@ -530,22 +522,15 @@ int buffer_migrate_page(struct address_space *mapping,
 	struct buffer_head *bh, *head;
 	int rc;
 
-	if (!page_has_buffers(page)) {
-		rc = migrate_page(mapping, newpage, page, mode);
-		if (rc) {
-			printk("buffer_migrate_page has no buffer rc=%d\n", rc);
-		}
-		return rc;
-	}
+	if (!page_has_buffers(page))
+		return migrate_page(mapping, newpage, page, mode);
 
 	head = page_buffers(page);
 
 	rc = migrate_page_move_mapping(mapping, newpage, page, head, mode);
 
-	if (rc) {
-		printk("buffer_migrate_page move mapping rc=%d\n", rc);
+	if (rc)
 		return rc;
-	}
 
 	/*
 	 * In the async case, migrate_page_move_mapping locked the buffers
@@ -682,13 +667,9 @@ static int move_to_new_page(struct page *newpage, struct page *page,
 		SetPageSwapBacked(newpage);
 
 	mapping = page_mapping(page);
-	if (!mapping) {
+	if (!mapping)
 		rc = migrate_page(mapping, newpage, page, mode);
-		if (rc != 0) {
-			printk("move_to_new_page no mapping rc=%d\n", rc);
-		}
-	}
-	else if (mapping->a_ops->migratepage) {
+	else if (mapping->a_ops->migratepage)
 		/*
 		 * Most pages have a mapping and most filesystems provide a
 		 * migratepage callback. Anonymous pages are part of swap
@@ -697,16 +678,8 @@ static int move_to_new_page(struct page *newpage, struct page *page,
 		 */
 		rc = mapping->a_ops->migratepage(mapping,
 						newpage, page, mode);
-		if (rc != 0) {
-			printk("move_to_new_page migratepage=%p rc=%d\n", mapping->a_ops->migratepage, rc);
-		}
-	}
-	else {
+	else
 		rc = fallback_migrate_page(mapping, newpage, page, mode);
-		if (rc != 0) {
-			printk("move_to_new_page fallback=%p rc=%d\n", mapping->a_ops->readpage, rc);
-		}
-	}
 
 	if (rc) {
 		newpage->mapping = NULL;
@@ -762,7 +735,6 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
 	 * serializes that).
 	 */
 	if (PageKsm(page) && !offlining) {
-		printk("__unmap_and_move KSM\n");
 		rc = -EBUSY;
 		goto unlock;
 	}
@@ -823,7 +795,6 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
 			 */
 			remap_swapcache = 0;
 		} else {
-			printk("__unmap_and_move page anon\n");
 			goto uncharge;
 		}
 	}
@@ -844,7 +815,6 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
 		VM_BUG_ON(PageAnon(page));
 		if (page_has_private(page)) {
 			try_to_free_buffers(page);
-			printk("__unmap_and_move no mapping has private\n");
 			goto uncharge;
 		}
 		goto skip_unmap;

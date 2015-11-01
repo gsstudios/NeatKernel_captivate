@@ -82,7 +82,6 @@ int undo_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
 	}
 	return 0;
 }
-
 /*
  * Test all pages in the range is free(means isolated) or not.
  * all pages in [start_pfn...end_pfn) must be in the same zone.
@@ -106,11 +105,8 @@ __test_page_isolated_in_pageblock(unsigned long pfn, unsigned long end_pfn)
 		else if (page_count(page) == 0 &&
 				page_private(page) == MIGRATE_ISOLATE)
 			pfn += 1;
-		else {
-			printk("__test_page_isolated_in_pageblock\n");
-			dump_page(page);
+		else
 			break;
-		}
 	}
 	if (pfn < end_pfn)
 		return 0;
