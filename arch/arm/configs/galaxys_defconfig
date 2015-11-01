@@ -59,7 +59,7 @@ CONFIG_AEABI=y
 # CONFIG_OABI_COMPAT is not set
 CONFIG_COMPACTION=y
 CONFIG_KSM=y
-CONFIG_CMDLINE="console=ttyFIQ0,115200 init=/init"
+CONFIG_CMDLINE="console=ttyFIQ0,115200 init=/init androidboot.selinux=permissive"
 CONFIG_KEXEC=y
 CONFIG_ATAGS_PROC=y
 CONFIG_KEXEC_HARDBOOT=y
