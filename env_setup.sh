@@ -59,7 +59,7 @@ export KBUILD_BUILD_HOST=ubuntu
 export ARCH=arm;
 export USE_SEC_FIPS_MODE=true;
 export KERNEL_CONFIG="${VARIANT}_defconfig";
-export LOCALVERSION="_NeatKernel_v2.0b002"
+export LOCALVERSION="_NeatKernel_v2.0b003"
 
 # build script
 export USER=`whoami`
